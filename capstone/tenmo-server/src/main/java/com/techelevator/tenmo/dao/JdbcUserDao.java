@@ -35,16 +35,15 @@ public class JdbcUserDao implements UserDao {
 
 
     public BigDecimal getBalance(String username) {
-        String sql = "SELECT balance FROM account WHERE user_id" +
+        String sql = "SELECT * FROM account WHERE user_id" +
                 " = (SELECT user_id FROM tenmo_user WHERE username = ?;)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-        BigDecimal balance = new BigDecimal(0);
-        System.out.println(balance);
-        if (results.next()){
-             balance = results.getBigDecimal("balance");
+
+        while (results.next()){
+
         }
 
-        return balance;
+
     }
 
     @Override
@@ -103,4 +102,6 @@ public class JdbcUserDao implements UserDao {
 //        user.setBalance(rs.getBigDecimal("balance"));
         return user;
     }
+
+    
 }
