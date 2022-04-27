@@ -33,6 +33,6 @@ public class AppController {
     @RequestMapping(path="/account/{username}")
     public Account getAnAccount(@PathVariable String username) {return accountDao.getAccount(username);}
 
-    @RequestMapping(path="/transfer/", method = RequestMethod.POST)
+    @RequestMapping(path="/transfer", method = RequestMethod.PUT)
     public Transfer bucksSend(@RequestBody Transfer transfer) {return accountDao.sendBucks(transfer);}
 }

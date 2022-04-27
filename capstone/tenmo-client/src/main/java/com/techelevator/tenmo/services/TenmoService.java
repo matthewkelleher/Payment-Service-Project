@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,29 +29,41 @@ public class TenmoService {
         this.authToken = authToken;
     }
 
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) { // variable forms request body
+
+        HttpHeaders headers = new HttpHeaders(); // we need headers for request
+        headers.setBearerAuth(this.authToken); // add auth line to header - either add provided token or null
+
+        return new HttpEntity<>(transfer, headers);
+
+    }
+
     private HttpEntity<Void> makeAuthEntity() {
 
         HttpHeaders headers = new HttpHeaders(); // we need headers for request
-        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(this.authToken); // add auth line to header - either add provided token or null
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        return entity;
+        return new HttpEntity<>(headers);
     }
 
     public boolean userList() {
 
-        List<User> listUsers = List.of(restTemplate.exchange(
-                API_BASE_URL,
-                HttpMethod.GET,
-                makeAuthEntity(),
-                User[].class
-        ).getBody());
 
-        for(User user : listUsers) {
-            System.out.println(user.getId() + " : " + user.getUsername());
+        try {
+            List<User> listUsers = List.of(restTemplate.exchange(
+                    API_BASE_URL,
+                    HttpMethod.GET,
+                    makeAuthEntity(),
+                    User[].class
+            ).getBody());
+
+            for (User user : listUsers) {
+                System.out.println(user.getId() + " : " + user.getUsername());
+            }
+        } catch (RestClientException e) {
+            System.out.println("Something went wrong.");
         }
-
         return true;
     }
 
@@ -70,11 +83,13 @@ public class TenmoService {
 
 
         return restTemplate.exchange(
-                API_BASE_URL + "transfer/",
-                HttpMethod.POST,
-                makeAuthEntity(),
+                API_BASE_URL + "transfer",
+                HttpMethod.PUT,
+                makeTransferEntity(transfer),
                 Transfer.class
         ).getBody();
+
+
 
 
 

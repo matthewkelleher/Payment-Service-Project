@@ -6,6 +6,7 @@ import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TenmoService;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class App {
 
@@ -16,6 +17,7 @@ public class App {
     private final TenmoService tenmoService = new TenmoService();
 
     private AuthenticatedUser currentUser;
+
 
     public static void main(String[] args) {
         App app = new App();
@@ -107,9 +109,21 @@ public class App {
 	}
 
 	private void sendBucks() {
+        tenmoService.setAuthToken(currentUser.getToken());
+        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         System.out.println(tenmoService.userList());
         int sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        while(Objects.equals((long) sendTo, currentUser.getUser().getId())) {
+            System.out.println("Invalid recipient.");
+            sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        }
         BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount:");
+        while(amountToSend.compareTo(acUser.getBalance()) >= 0) {
+            System.out.println("Invalid transfer amount.");
+            amountToSend = consoleService.promptForBigDecimal("Enter amount:");
+        }
+
+
         Transfer transfer = new Transfer(currentUser.getUser().getId().intValue(), sendTo, amountToSend);
         tenmoService.transferBucks(transfer);
 		
