@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
@@ -58,9 +59,11 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
+
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
+
     }
 
     private void mainMenu() {
@@ -88,7 +91,9 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        System.out.println();
+        tenmoService.setAuthToken(currentUser.getToken());
+        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
+        System.out.println("Your current account balance is: $" + acUser.getBalance());
 		
 	}
 

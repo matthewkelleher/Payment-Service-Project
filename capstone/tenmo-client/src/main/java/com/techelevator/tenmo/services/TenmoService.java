@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
@@ -17,6 +18,8 @@ public class TenmoService {
     private static final String API_BASE_URL = "http://localhost:8080/";
     private final RestTemplate restTemplate = new RestTemplate();
     private String authToken = null;
+
+
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
@@ -38,7 +41,7 @@ public class TenmoService {
 
 
         return restTemplate.exchange(
-        "https://localhost:8080/account/" + username,
+        "http://localhost:8080/account/" + username,
         HttpMethod.GET,
         makeAuthEntity(),
         Account.class
