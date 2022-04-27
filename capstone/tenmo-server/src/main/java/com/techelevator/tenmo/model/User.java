@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,6 +11,16 @@ public class User {
    private String username;
    private String password;
    private boolean activated;
+
+//   public BigDecimal getBalance() {
+//      return balance;
+//   }
+
+//   public void setBalance(BigDecimal balance) {
+//      this.balance = balance;
+//   }
+
+//   private BigDecimal balance = new BigDecimal("1000.00");
    private Set<Authority> authorities = new HashSet<>();
 
    public User() { }
@@ -19,6 +30,7 @@ public class User {
       this.username = username;
       this.password = password;
       this.activated = true;
+//      this.balance = balance;
    }
 
    public Long getId() {

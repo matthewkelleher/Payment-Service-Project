@@ -33,6 +33,20 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+
+    public BigDecimal getBalance(String username) {
+        String sql = "SELECT balance FROM account WHERE user_id" +
+                " = (SELECT user_id FROM tenmo_user WHERE username = ?;)";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        BigDecimal balance = new BigDecimal(0);
+        System.out.println(balance);
+        if (results.next()){
+             balance = results.getBigDecimal("balance");
+        }
+
+        return balance;
+    }
+
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
@@ -86,6 +100,7 @@ public class JdbcUserDao implements UserDao {
         user.setPassword(rs.getString("password_hash"));
         user.setActivated(true);
         user.setAuthorities("USER");
+//        user.setBalance(rs.getBigDecimal("balance"));
         return user;
     }
 }
