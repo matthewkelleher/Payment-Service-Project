@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,15 +36,27 @@ public class JdbcUserDao implements UserDao {
 
 
     public BigDecimal getBalance(String username) {
-        String sql = "SELECT * FROM account WHERE user_id" +
-                " = (SELECT user_id FROM tenmo_user WHERE username = ?;)";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
-
-        while (results.next()){
+        String sql = "SELECT balance FROM account WHERE account_id" +
+                " = (SELECT account_id FROM tenmo_user WHERE username ILIKE ?)";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+        BigDecimal balance = new BigDecimal(0);
+        if (results.next()){
+            balance = results.getBigDecimal("balance");
 
         }
 
+        return balance;
+    }
 
+    public Account getAccount(String username) {
+        String sql = "SELECT * FROM account WHERE user_id =" +
+                "(SELECT user_id FROM tenmo_user WHERE username ILIKE ?)";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+        Account account = new Account();
+        while(results.next()) {
+             account = mapRowToAccounts(results);
+        }
+        return account;
     }
 
     @Override
@@ -60,7 +73,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
-        String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE username ILIKE ?;";
+        String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE username ILIKE ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, username);
         if (rowSet.next()){
             return mapRowToUser(rowSet);
@@ -103,5 +116,14 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
-    
+    private Account mapRowToAccounts(SqlRowSet rs) {
+
+        Account account = new Account();
+        account.setAccountId(rs.getString("account_id"));
+        account.setUserId(rs.getString("user_id"));
+        account.setBalance(rs.getString("balance"));
+
+        return account;
+    }
+
 }

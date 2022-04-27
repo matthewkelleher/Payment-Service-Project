@@ -32,13 +32,6 @@ public class Account {
         this.balance = balance;
     }
 
-    public Account(String userId, String accountId, String balance) {
-        this.userId = userId;
-        this.accountId = accountId;
-        this.balance = balance;
-    }
 
-    public Account() {
 
-    }
 }

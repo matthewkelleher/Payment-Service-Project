@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,19 +19,15 @@ public class AppController {
     @Autowired
     UserDao userDao;
 
-    @RequestMapping(path="")
-    public List<User> listOfUsers() { return userDao.findAll();}
-
-    @RequestMapping(path="/{username}")
-    public User findByUser(@PathVariable String username) { return userDao.findByUsername(username);}
-
-
-    @RequestMapping(path="/account/{username}")
-    public BigDecimal balance(@PathVariable String username) { return userDao.getBalance(username);}
+//    @RequestMapping(path="/account/{username}")
+//    public BigDecimal balance(@PathVariable String username) { return userDao.getBalance(username);}
 
 @RequestMapping(path="")
     public List<User> listOfUsers() { return userDao.findAll();}
 
     @RequestMapping(path="/{username}")
     public User findByUser(@PathVariable String username) { return userDao.findByUsername(username);}
+
+    @RequestMapping(path="/account/{username}")
+    public Account getAnAccount(@PathVariable String username) {return userDao.getAccount(username);}
 }
