@@ -1,13 +1,15 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 
-
+@Component
 public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
@@ -36,19 +38,19 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
-    public BigDecimal sendBucks (BigDecimal bucks, int sending_id, int receiving_id) {
+    public Transfer sendBucks (Transfer transfer) {
         String sql = "UPDATE account" +
                 "SET balance = balance - ?" +
                 "WHERE user_id = ?";
-        jdbcTemplate.update(sql, bucks, sending_id);
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
 
         String sql2 = "UPDATE account" +
                 "SET balance = balance + ?" +
                 "WHERE user_id = ?";
-        jdbcTemplate.update(sql, bucks, receiving_id);
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_to());
 
 
-        return bucks;
+        return transfer;
     }
 
     private Account mapRowToAccounts(SqlRowSet rs) {
