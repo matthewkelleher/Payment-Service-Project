@@ -18,7 +18,14 @@ public class AppController {
     @Autowired
     UserDao userDao;
 
-@RequestMapping(path="/account/{username}")
+    @RequestMapping(path="")
+    public List<User> listOfUsers() { return userDao.findAll();}
+
+    @RequestMapping(path="/{username}")
+    public User findByUser(@PathVariable String username) { return userDao.findByUsername(username);}
+
+
+    @RequestMapping(path="/account/{username}")
     public BigDecimal balance(@PathVariable String username) { return userDao.getBalance(username);}
 
 @RequestMapping(path="")
