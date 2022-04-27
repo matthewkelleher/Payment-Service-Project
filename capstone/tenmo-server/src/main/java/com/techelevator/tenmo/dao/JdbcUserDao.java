@@ -35,7 +35,7 @@ public class JdbcUserDao implements UserDao {
 
 
     public BigDecimal getBalance(String username) {
-        String sql = "SELECT balance FROM account WHERE user_id" +
+        String sql = "SELECT * FROM account WHERE user_id" +
                 " = (SELECT user_id FROM tenmo_user WHERE username = ?;)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         BigDecimal balance = new BigDecimal(0);
