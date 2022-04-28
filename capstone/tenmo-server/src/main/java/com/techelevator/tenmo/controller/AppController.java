@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -37,8 +38,14 @@ public class AppController {
     public Account getAnAccount(@PathVariable String username) {return accountDao.getAccount(username);}
 
     @RequestMapping(path="/transfer", method = RequestMethod.PUT)
-    public Transfer bucksSend(@RequestBody Transfer transfer) {return accountDao.sendBucks(transfer);}
+    public Transfer bucksSend(@RequestBody Transfer transfer) {return transferDao.sendBucks(transfer);}
 
     @RequestMapping(path="/transfer/{id}", method = RequestMethod.GET) // get username out of here too
     public List<Transfer> listOfTransfers(@PathVariable Integer id) {return transferDao.getTransferList(id);}
+    @RequestMapping(path="/request", method = RequestMethod.POST)
+    public Transfer bucksRequest(@RequestBody Transfer transfer) {return transferDao.requestBucks(transfer);}
+    @RequestMapping(path="/pending", method = RequestMethod.GET)
+    public List<Transfer> listOfTransfers(Principal principal) {
+
+        return transferDao.pendingTransfers(principal.getName());}
 }

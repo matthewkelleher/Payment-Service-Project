@@ -24,7 +24,6 @@ public class TenmoService {
     private String authToken = null;
 
 
-
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
@@ -72,22 +71,22 @@ public class TenmoService {
 
 
         return restTemplate.exchange(
-        API_BASE_URL + "account/" + username, // get username out of path
-        HttpMethod.GET,
-        makeAuthEntity(),
-        Account.class
-            ).getBody();
+                API_BASE_URL + "account/" + username, // get username out of path
+                HttpMethod.GET,
+                makeAuthEntity(),
+                Account.class
+        ).getBody();
     }
 
-    public List<Transfer> listOfTransfers (Integer id) {
+    public List<Transfer> listOfTransfers(Integer id) {
 
         List<Transfer> transferList = List.of(
                 restTemplate.exchange(
-                API_BASE_URL + "transfer/" + id, // get username out of path
-                HttpMethod.GET,
-                makeAuthEntity(),
-                Transfer[].class
-        ).getBody());
+                        API_BASE_URL + "transfer/" + id, // get username out of path
+                        HttpMethod.GET,
+                        makeAuthEntity(),
+                        Transfer[].class
+                ).getBody());
 
         return transferList;
     }
@@ -103,14 +102,31 @@ public class TenmoService {
         ).getBody();
 
 
+    }
+
+    public Transfer requestBucks(Transfer transfer) {
 
 
-
-
+        return restTemplate.exchange(
+                API_BASE_URL + "request",
+                HttpMethod.POST,
+                makeTransferEntity(transfer),
+                Transfer.class
+        ).getBody();
 
 
     }
 
+    public List<Transfer> pendingTransfers() {
 
+        List<Transfer> transferList = List.of(
+                restTemplate.exchange(
+                        API_BASE_URL + "transfer/", // get username out of path
+                        HttpMethod.GET,
+                        makeAuthEntity(),
+                        Transfer[].class
+                ).getBody());
 
+        return transferList;
+    }
 }

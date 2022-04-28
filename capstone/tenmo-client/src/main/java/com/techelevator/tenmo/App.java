@@ -118,7 +118,7 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+
 		
 	}
 
@@ -144,8 +144,25 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
+        tenmoService.setAuthToken(currentUser.getToken());
+        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
+        System.out.println(tenmoService.userList());
+        int requestFrom = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel):");
+        while(Objects.equals((long) requestFrom, currentUser.getUser().getId())) {
+            System.out.println("Invalid recipient.");
+            requestFrom = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        }
+        BigDecimal amountToRequest = consoleService.promptForBigDecimal("Enter amount:");
+        while(amountToRequest.compareTo(BigDecimal.ZERO) <= 0) {
+            System.out.println("Invalid transfer amount.");
+            amountToRequest = consoleService.promptForBigDecimal("Enter amount:");
+        }
+		Transfer makeTransfer = new Transfer(currentUser.getUser().getId().intValue(), requestFrom, amountToRequest);
+        tenmoService.requestBucks(makeTransfer);
+
+
+
+
 	}
 
 }

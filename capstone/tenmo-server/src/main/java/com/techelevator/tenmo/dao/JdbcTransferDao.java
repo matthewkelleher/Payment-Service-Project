@@ -1,11 +1,13 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class JdbcTransferDao implements TransferDao {
 
     private JdbcTemplate jdbcTemplate;
     public JdbcTransferDao(DataSource ds) { this.jdbcTemplate = new JdbcTemplate(ds);}
+
 
     public List<Transfer> getTransferList(Integer id) {
         String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
@@ -33,6 +36,8 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 
+
+
     public Transfer mapRowToTransfer(SqlRowSet rs) {
 
         Transfer transfer = new Transfer();
@@ -48,5 +53,73 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setUsernameTo(rs.getString("name_to"));
 
         return transfer;
+    }
+
+    public Transfer sendBucks (Transfer transfer) {
+
+        String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
+        int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
+        int recipientId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_to());
+        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql3, 2, 2, senderId, recipientId, transfer.getAmount());
+
+        String sql = "UPDATE account" +
+                " SET balance = balance - ?" +
+                " WHERE user_id = ?";
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
+
+        String sql2 = "UPDATE account" +
+                " SET balance = balance + ?" +
+                " WHERE user_id = ?";
+        jdbcTemplate.update(sql2, transfer.getAmount(), transfer.getAccount_to());
+
+        return transfer;
+
+
+    }
+
+    public Transfer requestBucks (Transfer transfer) {
+
+        String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
+        int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
+        int recipientId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_to());
+        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql3, 1, 1, senderId, recipientId, transfer.getAmount());
+
+//        String sql = "UPDATE account" +
+//                " SET balance = balance - ?" +
+//                " WHERE user_id = ?";
+//        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
+//
+//        String sql2 = "UPDATE account" +
+//                " SET balance = balance + ?" +
+//                " WHERE user_id = ?";
+//        jdbcTemplate.update(sql2, transfer.getAmount(), transfer.getAccount_to());
+
+        return transfer;
+
+
+    }
+
+    public List<Transfer> pendingTransfers(String username) {
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
+                "t.account_from, t.account_to, t.amount, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
+                "JOIN account a ON t.account_to = a.account_id " +
+                "JOIN account f ON t.account_from = f.account_id " +
+                "JOIN tenmo_user u ON a.user_id = u.user_id " +
+                "JOIN tenmo_user b ON f.user_id = b.user_id " +
+                "JOIN transfer_type x ON t.transfer_type_id = x.transfer_type_id " +
+                "JOIN transfer_status y ON t.transfer_status_id = y.transfer_status_id " +
+                "WHERE u.user_id = (SELECT u.user_id WHERE u.username = ?) OR" +
+                " f.user_id = (SELECT u.user_id WHERE u.username = ?);";
+
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
+        List<Transfer> transfer = new ArrayList<>();
+        while(results.next()) {
+            transfer.add(mapRowToTransfer(results));
+        }
+        return transfer;
+
     }
 }

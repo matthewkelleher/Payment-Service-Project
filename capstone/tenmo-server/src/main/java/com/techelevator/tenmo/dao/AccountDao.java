@@ -9,7 +9,7 @@ public interface AccountDao {
 
     Account getAccount(String username);
 
-    Transfer sendBucks(Transfer transfer);
+
 
 
 
