@@ -25,8 +25,7 @@ public class AppController {
     @Autowired
     TransferDao transferDao;
 
-//    @RequestMapping(path="/account/{username}")
-//    public BigDecimal balance(@PathVariable String username) { return userDao.getBalance(username);}
+
 
     @RequestMapping(path="")
     public List<User> listOfUsers() { return userDao.findAll();}
@@ -40,12 +39,14 @@ public class AppController {
     @RequestMapping(path="/transfer", method = RequestMethod.PUT)
     public Transfer bucksSend(@RequestBody Transfer transfer) {return transferDao.sendBucks(transfer);}
 
-    @RequestMapping(path="/transfer/{id}", method = RequestMethod.GET) // get username out of here too
-    public List<Transfer> listOfTransfers(@PathVariable Integer id) {return transferDao.getTransferList(id);}
+    @RequestMapping(path="/transfer", method = RequestMethod.GET)
+    public List<Transfer> listOfTransfers(Principal principal) {
+        int userId = userDao.findIdByUsername(principal.getName());
+        return transferDao.getTransferList(principal.getName());}
     @RequestMapping(path="/request", method = RequestMethod.POST)
     public Transfer bucksRequest(@RequestBody Transfer transfer) {return transferDao.requestBucks(transfer);}
     @RequestMapping(path="/pending", method = RequestMethod.GET)
-    public List<Transfer> listOfTransfers(Principal principal) {
+    public List<Transfer> transfersPending(Principal principal) {
 
         return transferDao.pendingTransfers(principal.getName());}
 }

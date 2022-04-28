@@ -101,9 +101,9 @@ public class App {
 
 	private void viewTransferHistory() {
         tenmoService.setAuthToken(currentUser.getToken());
-        List<Transfer> transfers = tenmoService.listOfTransfers(currentUser.getUser().getId().intValue());
+        List<Transfer> transfers = tenmoService.listOfTransfers(2);
 
-        System.out.println("-----------------------------------------\n\t\t\tPending Transfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
+        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
                 "\n-----------------------------------------");
         for(Transfer i : transfers) {
             String toFrom = "";
@@ -137,19 +137,26 @@ public class App {
 
 	private void viewPendingRequests() {
         tenmoService.setAuthToken(currentUser.getToken());
-        List<Transfer> transfers = tenmoService.pendingTransfers();
+        List<Transfer> transfers = tenmoService.listOfTransfers(1);
+        String formatStr = "%-10s %-24s %-10s";
+        System.out.println("-------------------------------------------");
+        System.out.println("Pending Transfers");
+        System.out.println(String.format(formatStr,"ID","To","Amount"));
+        System.out.println("-------------------------------------------");
 
-        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
-                "\n-----------------------------------------");
         for(Transfer i : transfers) {
             String toFrom = "";
             if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
-                toFrom = "From: " + i.getUsernameFrom();
+                toFrom = i.getUsernameFrom();
             } else {
-                toFrom = "To: " + i.getUsernameTo();
+                toFrom = i.getUsernameTo();
             }
-            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() +"");
+            System.out.println(String.format(formatStr,
+                    i.getTransfer_id(),toFrom,"$ " + i.getAmount()));
         }
+        System.out.println("---------");
+        int pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
+
 		
 	}
 

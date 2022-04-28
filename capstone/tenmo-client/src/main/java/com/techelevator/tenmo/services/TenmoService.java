@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TenmoService {
@@ -78,17 +79,29 @@ public class TenmoService {
         ).getBody();
     }
 
-    public List<Transfer> listOfTransfers(Integer id) {
+    public List<Transfer> listOfTransfers(int code) {
+        List<Transfer> transferList = new ArrayList<>();
+        if (code == 2) {
+            transferList = List.of(
+                    restTemplate.exchange(
+                            API_BASE_URL + "transfer/",
+                            HttpMethod.GET,
+                            makeAuthEntity(),
+                            Transfer[].class
+                    ).getBody());
+        } else if (code == 1) {
 
-        List<Transfer> transferList = List.of(
+
+        transferList = List.of(
                 restTemplate.exchange(
-                        API_BASE_URL + "transfer/" + id, // get username out of path
+                        API_BASE_URL + "pending/", // get username out of path
                         HttpMethod.GET,
                         makeAuthEntity(),
                         Transfer[].class
                 ).getBody());
-
+    }
         return transferList;
+
     }
 
     public Transfer transferBucks(Transfer transfer) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TransferDao {
 
-    List<Transfer> getTransferList(Integer id);
+    List<Transfer> getTransferList(String username);
 
     Transfer mapRowToTransfer(SqlRowSet rs);
 

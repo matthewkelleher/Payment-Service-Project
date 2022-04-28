@@ -18,7 +18,7 @@ public class JdbcTransferDao implements TransferDao {
     public JdbcTransferDao(DataSource ds) { this.jdbcTemplate = new JdbcTemplate(ds);}
 
 
-    public List<Transfer> getTransferList(Integer id) {
+    public List<Transfer> getTransferList(String username) {
         String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
                 "t.account_from, t.account_to, t.amount, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
                 "JOIN account a ON t.account_to = a.account_id " +
@@ -27,8 +27,8 @@ public class JdbcTransferDao implements TransferDao {
                 "JOIN tenmo_user b ON f.user_id = b.user_id " +
                 "JOIN transfer_type x ON t.transfer_type_id = x.transfer_type_id " +
                 "JOIN transfer_status y ON t.transfer_status_id = y.transfer_status_id " +
-                "WHERE u.user_id = ? OR f.user_id = ?;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
+                "WHERE b.username = ? OR u.username = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
         List<Transfer> transfer = new ArrayList<>();
         while(results.next()) {
             transfer.add(mapRowToTransfer(results));
@@ -55,13 +55,20 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 
-    public Transfer sendBucks (Transfer transfer) {
+    public Transfer sendBucks(Transfer transfer) {
 
         String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
         int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
         int recipientId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_to());
         String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql3, 2, 2, senderId, recipientId, transfer.getAmount());
+        jdbcTemplate.update(sql3, 2, 1, senderId, recipientId, transfer.getAmount());
+
+        return transfer;
+
+
+    }
+
+    public Transfer approveBucks(Transfer transfer) {
 
         String sql = "UPDATE account" +
                 " SET balance = balance - ?" +
@@ -74,11 +81,9 @@ public class JdbcTransferDao implements TransferDao {
         jdbcTemplate.update(sql2, transfer.getAmount(), transfer.getAccount_to());
 
         return transfer;
-
-
     }
 
-    public Transfer requestBucks (Transfer transfer) {
+    public Transfer requestBucks(Transfer transfer) {
 
         String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
         int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
@@ -110,7 +115,7 @@ public class JdbcTransferDao implements TransferDao {
                 "JOIN tenmo_user b ON f.user_id = b.user_id " +
                 "JOIN transfer_type x ON t.transfer_type_id = x.transfer_type_id " +
                 "JOIN transfer_status y ON t.transfer_status_id = y.transfer_status_id " +
-                "WHERE u.user_id = (SELECT u.user_id WHERE u.username = ?) AND t.transfer_status_id = 1;";
+                "WHERE u.username = ? AND t.transfer_status_id = 1;";
 
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);

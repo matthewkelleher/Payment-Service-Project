@@ -12,15 +12,7 @@ public class User {
    private String password;
    private boolean activated;
 
-//   public BigDecimal getBalance() {
-//      return balance;
-//   }
 
-//   public void setBalance(BigDecimal balance) {
-//      this.balance = balance;
-//   }
-
-//   private BigDecimal balance = new BigDecimal("1000.00");
    private Set<Authority> authorities = new HashSet<>();
 
    public User() { }
