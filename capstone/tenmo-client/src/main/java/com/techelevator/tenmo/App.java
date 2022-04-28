@@ -102,19 +102,37 @@ public class App {
 	private void viewTransferHistory() {
         tenmoService.setAuthToken(currentUser.getToken());
         List<Transfer> transfers = tenmoService.listOfTransfers(currentUser.getUser().getId().intValue());
-        System.out.println("-----------------------------------------\nTransfer Details\n" +
-                "-----------------------------------------");
-        for(Transfer i : transfers) {
-            System.out.println("Id: " + i.getTransfer_id());
-            System.out.println("From: " + i.getUsernameFrom());
-            System.out.println("To: " + i.getUsernameTo());
-            System.out.println("Type: " + i.getTransfer_type_desc());
-            System.out.println("Status: " + i.getTransfer_status_desc());
-            System.out.println("Amount: $" + i.getAmount());
-            System.out.println("");
-        }
 
-		
+        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
+                "\n-----------------------------------------");
+        for(Transfer i : transfers) {
+            String toFrom = "";
+            if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
+                toFrom = "From: " + i.getUsernameFrom();
+            } else {
+                toFrom = "To: " + i.getUsernameTo();
+            }
+            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() +"");
+        }
+            int transferId = -1;
+            while (transferId != 0) {
+                transferId = consoleService.promptForInt("\nPlease enter transfer ID to view details (0 to cancel):\n");
+                for(Transfer i : transfers) {
+                    if (transferId == i.getTransfer_id()) {
+                        System.out.println("-----------------------------------------\n\t\t\tTransfer Details\t\t\t" +
+                                "\n-----------------------------------------");
+                        System.out.println("Id: " + i.getTransfer_id());
+                        System.out.println("From: " + i.getUsernameFrom());
+                        System.out.println("To: " + i.getUsernameTo());
+                        System.out.println("Type: " + i.getTransfer_type_desc());
+                        System.out.println("Status: " + i.getTransfer_status_desc());
+                        System.out.println("Amount: $" + i.getAmount());
+                        System.out.println("");
+                        transferId = 0;
+                    }
+                }
+            }
+
 	}
 
 	private void viewPendingRequests() {
