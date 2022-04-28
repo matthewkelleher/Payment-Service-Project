@@ -72,7 +72,7 @@ public class TenmoService {
 
 
         return restTemplate.exchange(
-        API_BASE_URL + "account/" + username,
+        API_BASE_URL + "account/" + username, // get username out of path
         HttpMethod.GET,
         makeAuthEntity(),
         Account.class
