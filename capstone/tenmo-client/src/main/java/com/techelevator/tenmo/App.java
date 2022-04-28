@@ -103,7 +103,7 @@ public class App {
         tenmoService.setAuthToken(currentUser.getToken());
         List<Transfer> transfers = tenmoService.listOfTransfers(currentUser.getUser().getId().intValue());
 
-        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
+        System.out.println("-----------------------------------------\n\t\t\tPending Transfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
                 "\n-----------------------------------------");
         for(Transfer i : transfers) {
             String toFrom = "";
@@ -136,7 +136,20 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
+        tenmoService.setAuthToken(currentUser.getToken());
+        List<Transfer> transfers = tenmoService.pendingTransfers();
 
+        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
+                "\n-----------------------------------------");
+        for(Transfer i : transfers) {
+            String toFrom = "";
+            if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
+                toFrom = "From: " + i.getUsernameFrom();
+            } else {
+                toFrom = "To: " + i.getUsernameTo();
+            }
+            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() +"");
+        }
 		
 	}
 

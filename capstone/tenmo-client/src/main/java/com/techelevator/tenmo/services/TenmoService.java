@@ -121,7 +121,7 @@ public class TenmoService {
 
         List<Transfer> transferList = List.of(
                 restTemplate.exchange(
-                        API_BASE_URL + "transfer/", // get username out of path
+                        API_BASE_URL + "pending/", // get username out of path
                         HttpMethod.GET,
                         makeAuthEntity(),
                         Transfer[].class

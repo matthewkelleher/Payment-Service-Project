@@ -110,11 +110,10 @@ public class JdbcTransferDao implements TransferDao {
                 "JOIN tenmo_user b ON f.user_id = b.user_id " +
                 "JOIN transfer_type x ON t.transfer_type_id = x.transfer_type_id " +
                 "JOIN transfer_status y ON t.transfer_status_id = y.transfer_status_id " +
-                "WHERE u.user_id = (SELECT u.user_id WHERE u.username = ?) OR" +
-                " f.user_id = (SELECT u.user_id WHERE u.username = ?);";
+                "WHERE u.user_id = (SELECT u.user_id WHERE u.username = ?) AND t.transfer_status_id = 1;";
 
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username, username);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
         List<Transfer> transfer = new ArrayList<>();
         while(results.next()) {
             transfer.add(mapRowToTransfer(results));
