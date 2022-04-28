@@ -79,6 +79,19 @@ public class TenmoService {
             ).getBody();
     }
 
+    public List<Transfer> listOfTransfers (Integer id) {
+
+        List<Transfer> transferList = List.of(
+                restTemplate.exchange(
+                API_BASE_URL + "transfer/" + id, // get username out of path
+                HttpMethod.GET,
+                makeAuthEntity(),
+                Transfer[].class
+        ).getBody());
+
+        return transferList;
+    }
+
     public Transfer transferBucks(Transfer transfer) {
 
 
@@ -97,5 +110,7 @@ public class TenmoService {
 
 
     }
+
+
 
 }

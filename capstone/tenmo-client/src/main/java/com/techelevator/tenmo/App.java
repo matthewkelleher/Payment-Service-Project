@@ -6,6 +6,7 @@ import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TenmoService;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class App {
@@ -99,6 +100,19 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
+        tenmoService.setAuthToken(currentUser.getToken());
+        List<Transfer> transfers = tenmoService.listOfTransfers(currentUser.getUser().getId().intValue());
+        System.out.println("-----------------------------------------\nTransfer Details\n" +
+                "-----------------------------------------");
+        for(Transfer i : transfers) {
+            System.out.println("Id: " + i.getTransfer_id());
+            System.out.println("From: " + i.getUsernameFrom());
+            System.out.println("To: " + i.getUsernameTo());
+            System.out.println("Type: " + i.getTransfer_type_desc());
+            System.out.println("Status: " + i.getTransfer_status_desc());
+            System.out.println("Amount: $" + i.getAmount());
+            System.out.println("");
+        }
 
 		
 	}
