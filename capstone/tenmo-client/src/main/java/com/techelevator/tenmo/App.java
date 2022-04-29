@@ -72,6 +72,14 @@ public class App {
     }
 
     private void mainMenu() {
+        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
+
+        // move this to server side?
+        if(acUser.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("There is a problem with your account. Please contact TEnmo.");
+            System.exit(0);
+        }
+
         int menuSelection = -1;
         while (menuSelection != 0) {
             consoleService.printMainMenu();
@@ -116,11 +124,9 @@ public class App {
             } else {
                 toFrom = "To: " + i.getUsernameTo();
             }
-<<<<<<< HEAD
-            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "");
-=======
+
             System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "\t\t" + i.getTransfer_status_desc());
->>>>>>> badbecf37c917aa3aa6c6d151fe681200774fc54
+
 
         }
         int transferId = -1;
@@ -219,18 +225,19 @@ public class App {
             }
 
             BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount:");
-            if (amountToSend.compareTo(BigDecimal.ZERO) != 0) {
+
 
 
                 while (amountToSend.compareTo(acUser.getBalance()) >= 0 || amountToSend.compareTo(BigDecimal.ZERO) < 0) {
                     System.out.println("Invalid transfer amount.");
                     amountToSend = consoleService.promptForBigDecimal("Enter amount:");
+
+                    if(amountToSend.compareTo(BigDecimal.ZERO) != 0) {
+                        Transfer transfer = new Transfer(currentUser.getUser().getId().intValue(), sendTo, amountToSend);
+                        tenmoService.transferBucks(transfer);
+                    }
                 }
 
-
-                Transfer transfer = new Transfer(currentUser.getUser().getId().intValue(), sendTo, amountToSend);
-                tenmoService.transferBucks(transfer);
-            }
 
     }
 
