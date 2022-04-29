@@ -90,6 +90,14 @@ public class JdbcTransferDao implements TransferDao {
                 " WHERE account_id = ?";
         jdbcTemplate.update(sql2, transfer.getAmount(), transfer.getAccount_to());
 
+        String sql3 = "UPDATE transfer" +
+                " SET transfer_status_id = 2" +
+                " WHERE transfer_id = ?";
+
+        jdbcTemplate.update(sql3, transfer.getTransfer_id());
+
+
+
         return transfer;
     }
 
