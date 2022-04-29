@@ -47,24 +47,23 @@ public class TenmoService {
         return new HttpEntity<>(headers);
     }
 
-    public boolean userList() {
+    public List<User> userList() {
 
-
+        List<User> listUsers = null;
         try {
-            List<User> listUsers = List.of(restTemplate.exchange(
+            listUsers = List.of(restTemplate.exchange(
                     API_BASE_URL,
                     HttpMethod.GET,
                     makeAuthEntity(),
                     User[].class
             ).getBody());
 
-            for (User user : listUsers) {
-                System.out.println(user.getId() + " : " + user.getUsername());
-            }
+
+
         } catch (RestClientException e) {
             System.out.println("Something went wrong.");
         }
-        return true;
+        return listUsers;
     }
 
 
