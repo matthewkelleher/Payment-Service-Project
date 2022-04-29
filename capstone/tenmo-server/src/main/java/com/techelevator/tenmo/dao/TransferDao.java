@@ -17,4 +17,7 @@ public interface TransferDao {
     Transfer requestBucks(Transfer transfer);
 
     List<Transfer> pendingTransfers(String username);
+
+    Transfer approveBucks(Transfer transfer);
+
 }
