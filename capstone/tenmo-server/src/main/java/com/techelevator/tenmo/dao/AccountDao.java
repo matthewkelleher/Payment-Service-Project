@@ -9,8 +9,4 @@ public interface AccountDao {
 
     Account getAccount(String username);
 
-
-
-
-
 }

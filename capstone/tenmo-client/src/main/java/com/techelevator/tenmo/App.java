@@ -61,7 +61,7 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
-
+        tenmoService.setAuthToken(currentUser.getToken());
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
@@ -93,14 +93,14 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        tenmoService.setAuthToken(currentUser.getToken());
+
         Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         System.out.println("Your current account balance is: $" + acUser.getBalance());
 		
 	}
 
 	private void viewTransferHistory() {
-        tenmoService.setAuthToken(currentUser.getToken());
+
         List<Transfer> transfers = tenmoService.listOfTransfers(2);
 
         System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
@@ -136,12 +136,12 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
-        tenmoService.setAuthToken(currentUser.getToken());
+
         List<Transfer> transfers = tenmoService.listOfTransfers(1);
         String formatStr = "%-10s %-24s %-10s";
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfers");
-        System.out.println(String.format(formatStr,"ID","To","Amount"));
+        System.out.println(String.format(formatStr,"ID","From","Amount"));
         System.out.println("-------------------------------------------");
 
         for(Transfer i : transfers) {
@@ -161,7 +161,7 @@ public class App {
 	}
 
 	private void sendBucks() {
-        tenmoService.setAuthToken(currentUser.getToken());
+
         Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         System.out.println(tenmoService.userList());
         int sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
@@ -182,7 +182,7 @@ public class App {
 	}
 
 	private void requestBucks() {
-        tenmoService.setAuthToken(currentUser.getToken());
+
         Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         System.out.println(tenmoService.userList());
         int requestFrom = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel):");
