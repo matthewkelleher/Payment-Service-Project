@@ -148,11 +148,11 @@ public class App {
 
         for(Transfer i : transfers) {
             String toFrom = "";
-            if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
-                toFrom = i.getUsernameFrom();
-            } else {
+//            if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
+//                toFrom = i.getUsernameFrom();
+//            } else {
                 toFrom = i.getUsernameTo();
-            }
+//            }
             System.out.println(String.format(formatStr,
                     i.getTransfer_id(),toFrom,"$ " + i.getAmount()));
         }
@@ -164,6 +164,7 @@ public class App {
             if(pendingId == i.getTransfer_id()) {
                 int option = consoleService.promptForInt("1: Approve\n2: Reject\n0: Don't approve or reject\n----------\nPlease choose an option: ");
                 if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) <= 0) {
+                    System.out.println(i);
                     tenmoService.approveBucks(i);
                     System.out.println("Transfer approved.");
                 } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
@@ -216,7 +217,7 @@ public class App {
             System.out.println("Invalid transfer amount.");
             amountToRequest = consoleService.promptForBigDecimal("Enter amount:");
         }
-		Transfer makeTransfer = new Transfer(currentUser.getUser().getId().intValue(), requestFrom, amountToRequest);
+		Transfer makeTransfer = new Transfer(requestFrom, currentUser.getUser().getId().intValue(), amountToRequest);
         tenmoService.requestBucks(makeTransfer);
 
 

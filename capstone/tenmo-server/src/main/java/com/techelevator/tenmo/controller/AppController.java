@@ -63,7 +63,8 @@ public class AppController {
         return transferDao.pendingTransfers(principal.getName());}
 
     @RequestMapping(path="/approve", method = RequestMethod.PUT)
-    public Transfer approveBucks(@RequestBody Transfer transfer) {
+    public Transfer bucksApprove(@RequestBody Transfer transfer) {
+        System.out.println(transfer);
         return transferDao.approveBucks(transfer);
     }
 }
