@@ -101,6 +101,15 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
     }
 
+    public Transfer rejectTransfer(Transfer transfer) {
+        String sql3 = "UPDATE transfer" +
+                " SET transfer_status_id = 3" +
+                " WHERE transfer_id = ?";
+
+        jdbcTemplate.update(sql3, transfer.getTransfer_id());
+        return transfer;
+    }
+
     public Transfer requestBucks(Transfer transfer) {
 
         String sql1 = "SELECT account_id FROM account WHERE user_id = ?";

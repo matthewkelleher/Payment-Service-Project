@@ -151,4 +151,13 @@ public class TenmoService {
                 Transfer.class
         ).getBody();
     }
+
+    public Transfer rejectTransfer(Transfer transfer) {
+        return restTemplate.exchange(
+                API_BASE_URL + "reject",
+                HttpMethod.PUT,
+                makeTransferEntity(transfer),
+                Transfer.class
+        ).getBody();
+    }
 }
