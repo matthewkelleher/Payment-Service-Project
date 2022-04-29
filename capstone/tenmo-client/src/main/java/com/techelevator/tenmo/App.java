@@ -107,7 +107,7 @@ public class App {
         List<Transfer> transfers = tenmoService.listOfTransfers(2);
 
         System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
-                "\n-----------------------------------------");
+                "\n\t\t\t Type\n-----------------------------------------");
 
         for (Transfer i : transfers) {
             String toFrom = "";
@@ -116,7 +116,11 @@ public class App {
             } else {
                 toFrom = "To: " + i.getUsernameTo();
             }
+<<<<<<< HEAD
             System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "");
+=======
+            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "\t\t" + i.getTransfer_status_desc());
+>>>>>>> badbecf37c917aa3aa6c6d151fe681200774fc54
 
         }
         int transferId = -1;
@@ -173,8 +177,14 @@ public class App {
                 } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
                     System.out.println("You don't have enough money to approve this transfer.");
                 } else if (option == 2) {
+
                     //remove the transfer
                 } else if (option == 0) {
+
+                    tenmoService.rejectTransfer(i);
+                    System.out.println("Transfer Rejected");
+                } else if (option == 0){
+
                     //Don't do anything
                 } else {
                     System.out.println("Invalid input.");

@@ -67,4 +67,9 @@ public class AppController {
         System.out.println(transfer);
         return transferDao.approveBucks(transfer);
     }
+
+    @RequestMapping(path="/reject", method = RequestMethod.PUT)
+    public Transfer rejectTransfer(@RequestBody Transfer transfer) {
+        return transferDao.rejectTransfer(transfer);
+    }
 }

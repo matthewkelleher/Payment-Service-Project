@@ -20,4 +20,6 @@ public interface TransferDao {
 
     Transfer approveBucks(Transfer transfer);
 
+    Transfer rejectTransfer(Transfer transfer);
+
 }
