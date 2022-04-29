@@ -105,6 +105,7 @@ public class App {
 
         System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
                 "\n-----------------------------------------");
+
         for(Transfer i : transfers) {
             String toFrom = "";
             if(!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
@@ -113,6 +114,7 @@ public class App {
                 toFrom = "To: " + i.getUsernameTo();
             }
             System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() +"");
+
         }
             int transferId = -1;
             while (transferId != 0) {
@@ -156,8 +158,27 @@ public class App {
         }
         System.out.println("---------");
         int pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
+        //
+        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
+        for(Transfer i : transfers) {
+            if(pendingId == i.getTransfer_id()) {
+                int option = consoleService.promptForInt("1: Approve\n2: Reject\n0: Don't approve or reject\n----------\nPlease choose an option: ");
+                if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) <= 0) {
+                    tenmoService.approveBucks(i);
+                    System.out.println("Transfer approved.");
+                } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
+                    System.out.println("You don't have enough money to approve this transfer.");
+                } else if (option == 2) {
+                    //remove the transfer
+                } else if (option == 0){
+                    //Don't do anything
+                } else {
+                    System.out.println("Invalid input.");
+                }
+            }
 
-		
+        }
+		//
 	}
 
 	private void sendBucks() {

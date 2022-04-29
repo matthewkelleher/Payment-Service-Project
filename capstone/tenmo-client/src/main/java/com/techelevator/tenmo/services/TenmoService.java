@@ -142,4 +142,13 @@ public class TenmoService {
 
         return transferList;
     }
+
+    public Transfer approveBucks(Transfer transfer) {
+        return restTemplate.exchange(
+                API_BASE_URL + "approve",
+                HttpMethod.PUT,
+                makeTransferEntity(transfer),
+                Transfer.class
+        ).getBody();
+    }
 }

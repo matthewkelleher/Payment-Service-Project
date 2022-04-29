@@ -49,4 +49,9 @@ public class AppController {
     public List<Transfer> transfersPending(Principal principal) {
 
         return transferDao.pendingTransfers(principal.getName());}
+
+    @RequestMapping(path="/approve", method = RequestMethod.PUT)
+    public Transfer approveBucks(@RequestBody Transfer transfer) {
+        return transferDao.approveBucks(transfer);
+    }
 }
