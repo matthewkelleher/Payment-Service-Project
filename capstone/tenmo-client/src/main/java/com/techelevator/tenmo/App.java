@@ -64,9 +64,10 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
-        tenmoService.setAuthToken(currentUser.getToken());
-        if (currentUser == null) {
-            consoleService.printErrorMessage();
+        try {
+            tenmoService.setAuthToken(currentUser.getToken());
+        } catch (NullPointerException e) {
+            System.out.println("Incorrect Username or Password");
         }
 
     }
@@ -171,7 +172,7 @@ public class App {
         }
         System.out.println("---------");
         int pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
-        //
+
         Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         for (Transfer i : transfers) {
             if (pendingId == i.getTransfer_id()) {
@@ -191,14 +192,14 @@ public class App {
                     System.out.println("Transfer Rejected");
                 } else if (option == 0){
 
-                    //Don't do anything
+
                 } else {
                     System.out.println("Invalid input.");
                 }
             }
 
         }
-        //
+
     }
 
     private void sendBucks() {
