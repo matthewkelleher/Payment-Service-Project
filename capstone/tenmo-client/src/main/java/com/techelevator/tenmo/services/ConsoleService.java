@@ -1,9 +1,13 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -44,6 +48,59 @@ public class ConsoleService {
         System.out.println("5: Request TE bucks");
         System.out.println("0: Exit");
         System.out.println();
+    }
+
+    public void transferHistoryMenu(List<Transfer> transfers, AuthenticatedUser user) {
+        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
+                "\n\t\t\t Type\n-----------------------------------------");
+        for (Transfer i : transfers) {
+            String toFrom = "";
+            if (!i.getUsernameFrom().equals(user.getUser().getUsername())) {
+                toFrom = "From: " + i.getUsernameFrom();
+            } else {
+                toFrom = "To: " + i.getUsernameTo();
+            }
+            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "\t\t" + i.getTransfer_status_desc());
+        }
+    }
+
+    public void transferHistoryMenu(Transfer i) {
+        System.out.println("-----------------------------------------\n\t\t\tTransfer Details\t\t\t" +
+                "\n-----------------------------------------");
+        System.out.println("Id: " + i.getTransfer_id());
+        System.out.println("From: " + i.getUsernameFrom());
+        System.out.println("To: " + i.getUsernameTo());
+        System.out.println("Type: " + i.getTransfer_type_desc());
+        System.out.println("Status: " + i.getTransfer_status_desc());
+        System.out.println("Amount: $" + i.getAmount());
+        System.out.println("");
+    }
+
+    public void sendBucksMenu(List<User> listUsers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Users");
+        System.out.println("ID\t\t\t\tName");
+        System.out.println("-------------------------------------------");
+        for (User user : listUsers) {
+            System.out.println(user.getId() + "\t\t\t" + user.getUsername());
+        }
+        System.out.println("-------------------------------------------\n");
+    }
+
+    public void pendingRequestsMenu(List<Transfer> transfers) {
+        String formatStr = "%-10s %-24s %-10s";
+        System.out.println("\n-------------------------------------------");
+        System.out.println("Pending Transfers");
+        System.out.println(String.format(formatStr, "ID", "From", "Amount"));
+        System.out.println("-------------------------------------------");
+
+        for (Transfer i : transfers) {
+            String toFrom = "";
+            toFrom = i.getUsernameTo();
+            System.out.println(String.format(formatStr,
+                    i.getTransfer_id(), toFrom, "$ " + i.getAmount()));
+        }
+        System.out.println("-------------------------------------------");
     }
 
     public UserCredentials promptForCredentials() {
