@@ -170,33 +170,33 @@ public class App {
                     i.getTransfer_id(), toFrom, "$ " + i.getAmount()));
         }
         System.out.println("---------");
-        int pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
-        //
-        Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
-        for (Transfer i : transfers) {
-            if (pendingId == i.getTransfer_id()) {
-                int option = consoleService.promptForInt("1: Approve\n2: Reject\n0: Don't approve or reject\n----------\nPlease choose an option: ");
-                if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) <= 0) {
-                    System.out.println(i);
-                    tenmoService.approveBucks(i);
-                    System.out.println("Transfer approved.");
-                } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
-                    System.out.println("You don't have enough money to approve this transfer.");
-                } else if (option == 2) {
+        int pendingId = -1;
+        while(pendingId != 0) {
+             pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
+            //
+            Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
+            for (Transfer i : transfers) {
+                if (pendingId == i.getTransfer_id()) {
+                    int option = consoleService.promptForInt("1: Approve\n2: Reject\n0: Don't approve or reject\n----------\nPlease choose an option: ");
+                    if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) <= 0) {
+                        System.out.println(i);
+                        tenmoService.approveBucks(i);
+                        System.out.println("Transfer approved.");
+                    } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
+                        System.out.println("You don't have enough money to approve this transfer.");
+                    }else if (option == 2) {
 
-                    //remove the transfer
-                } else if (option == 0) {
+                        tenmoService.rejectTransfer(i);
+                        System.out.println("Transfer Rejected");
+                    } else if (option == 0) {
 
-                    tenmoService.rejectTransfer(i);
-                    System.out.println("Transfer Rejected");
-                } else if (option == 0){
-
-                    //Don't do anything
-                } else {
-                    System.out.println("Invalid input.");
+                        //Don't do anything
+                    } else {
+                        System.out.println("Invalid input.");
+                    }
                 }
-            }
 
+            }
         }
         //
     }
