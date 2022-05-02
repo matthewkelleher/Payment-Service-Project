@@ -10,10 +10,13 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -31,10 +34,6 @@ public class AppController {
     @RequestMapping(path="")
     public List<User> listOfUsers() { return userDao.findAll();}
 
-    @RequestMapping(path="/{username}")
-    public User findByUser(@PathVariable String username) { return userDao.findByUsername(username);}
-
-
     @RequestMapping(path="/account/balance")
     public Account getAnAccount(Principal principal) {
 
@@ -43,7 +42,18 @@ public class AppController {
     @ApiOperation(value = "Bucks Send",
             notes = "This method initiates a transfer of funds between accounts")
     @RequestMapping(path="/transfer", method = RequestMethod.PUT)
-    public Transfer bucksSend(@RequestBody Transfer transfer) {return transferDao.sendBucks(transfer);}
+    public void bucksSend(@RequestBody Transfer transfer, Principal principal) {
+
+       if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) <= 0 &&
+        transfer.getAccount_from() != transfer.getAccount_to()) {
+        transferDao.sendBucks(transfer);
+
+       } else {
+
+          throw new Error();
+        }
+
+        }
 
     @ApiOperation(value = "List Of Transfers",
             notes = "This method provides a list of all transfers in the current user's account")
@@ -51,10 +61,12 @@ public class AppController {
     public List<Transfer> listOfTransfers(Principal principal) {
         int userId = userDao.findIdByUsername(principal.getName());
         return transferDao.getTransferList(principal.getName());}
+
     @ApiOperation(value = "Bucks Request",
             notes = "This method initiates a request for funds between accounts")
     @RequestMapping(path="/request", method = RequestMethod.POST)
     public Transfer bucksRequest(@RequestBody Transfer transfer) {return transferDao.requestBucks(transfer);}
+
     @ApiOperation(value = "Transfers Pending",
             notes = "This method provides a list of pending transfers of which the user is a recipient")
     @RequestMapping(path="/pending", method = RequestMethod.GET)

@@ -105,15 +105,18 @@ public class TenmoService {
 
     public Transfer transferBucks(Transfer transfer) {
 
-
-        return restTemplate.exchange(
-                API_BASE_URL + "transfer",
-                HttpMethod.PUT,
-                makeTransferEntity(transfer),
-                Transfer.class
-        ).getBody();
-
-
+        try {
+            restTemplate.exchange(
+                    API_BASE_URL + "transfer",
+                    HttpMethod.PUT,
+                    makeTransferEntity(transfer),
+                    Transfer.class
+            ).getBody();
+            System.out.println("Transfer succeeded.");
+        } catch (Error e) {
+            System.out.println("Transfer failed.");
+        }
+        return transfer;
     }
 
     public Transfer requestBucks(Transfer transfer) {
