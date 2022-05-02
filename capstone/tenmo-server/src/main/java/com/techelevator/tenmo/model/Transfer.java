@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class Transfer {
@@ -7,8 +8,11 @@ public class Transfer {
     private int transfer_id;
     private int transfer_type_id;
     private int transfer_status_id;
+    @NotBlank
     private int account_from;
+    @NotBlank
     private int account_to;
+    @NotBlank
     private BigDecimal amount;
     private String usernameFrom;
     private String transfer_type_desc;

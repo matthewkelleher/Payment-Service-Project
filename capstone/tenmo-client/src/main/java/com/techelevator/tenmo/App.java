@@ -182,7 +182,7 @@ public class App {
                 if (pendingId == i.getTransfer_id()) {
                     int option = consoleService.promptForInt("1: Approve\n2: Reject\n0: Don't approve or reject\n----------\nPlease choose an option: ");
                     if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) <= 0) {
-                        System.out.println(i);
+
                         tenmoService.approveBucks(i);
                         System.out.println("Transfer approved.");
                     } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
@@ -235,15 +235,18 @@ public class App {
                 while (amountToSend.compareTo(acUser.getBalance()) >= 0 || amountToSend.compareTo(BigDecimal.ZERO) < 0) {
                     System.out.println("Invalid transfer amount.");
                     amountToSend = consoleService.promptForBigDecimal("Enter amount:");
-
-                    if(amountToSend.compareTo(BigDecimal.ZERO) != 0) {
+                }
+                if(amountToSend.compareTo(BigDecimal.ZERO) != 0) {
                         Transfer transfer = new Transfer(currentUser.getUser().getId().intValue(), sendTo, amountToSend);
                         tenmoService.transferBucks(transfer);
+
+
                     }
                 }
 
 
-    }
+
+
 
 
     private void requestBucks() {

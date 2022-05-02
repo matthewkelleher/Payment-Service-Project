@@ -1,14 +1,17 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class User {
-
+   @NotBlank
    private Long id;
+   @NotBlank
    private String username;
+   @NotBlank
    private String password;
    private boolean activated;
 
