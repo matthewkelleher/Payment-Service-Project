@@ -8,10 +8,12 @@ import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -48,10 +50,15 @@ public class AppController {
         transfer.getAccount_from() != transfer.getAccount_to()) {
         transferDao.sendBucks(transfer);
 
-       } else {
+       } else if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) > 0) {
 
-          throw new Error();
-        }
+          throw new ResponseStatusException(
+                  HttpStatus.I_AM_A_TEAPOT
+          );
+        } else if(transfer.getAccount_from() == transfer.getAccount_to()) {
+
+           throw new IllegalArgumentException();
+       }
 
         }
 

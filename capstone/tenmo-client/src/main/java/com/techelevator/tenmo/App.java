@@ -114,36 +114,13 @@ public class App {
     private void viewTransferHistory() {
 
         List<Transfer> transfers = tenmoService.listOfTransfers(2);
-
-        System.out.println("-----------------------------------------\n\t\t\tTransfers\n\nID\t\t\tFrom/To\t\t\tAmount" +
-                "\n\t\t\t Type\n-----------------------------------------");
-
-        for (Transfer i : transfers) {
-            String toFrom = "";
-            if (!i.getUsernameFrom().equals(currentUser.getUser().getUsername())) {
-                toFrom = "From: " + i.getUsernameFrom();
-            } else {
-                toFrom = "To: " + i.getUsernameTo();
-            }
-
-            System.out.println(i.getTransfer_id() + "\t\t" + toFrom + "\t\t" + "$" + i.getAmount() + "\t\t" + i.getTransfer_status_desc());
-
-
-        }
+        consoleService.transferHistoryMenu(transfers, currentUser);
         int transferId = -1;
         while (transferId != 0) {
             transferId = consoleService.promptForInt("\nPlease enter transfer ID to view details (0 to cancel):\n");
             for (Transfer i : transfers) {
                 if (transferId == i.getTransfer_id()) {
-                    System.out.println("-----------------------------------------\n\t\t\tTransfer Details\t\t\t" +
-                            "\n-----------------------------------------");
-                    System.out.println("Id: " + i.getTransfer_id());
-                    System.out.println("From: " + i.getUsernameFrom());
-                    System.out.println("To: " + i.getUsernameTo());
-                    System.out.println("Type: " + i.getTransfer_type_desc());
-                    System.out.println("Status: " + i.getTransfer_status_desc());
-                    System.out.println("Amount: $" + i.getAmount());
-                    System.out.println("");
+                    consoleService.transferHistoryMenu(i);
                     transferId = 0;
                 }
             }
@@ -154,6 +131,7 @@ public class App {
     private void viewPendingRequests() {
 
         List<Transfer> transfers = tenmoService.listOfTransfers(1);
+
         String formatStr = "%-10s %-24s %-10s";
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfers");
@@ -175,8 +153,8 @@ public class App {
 
         int pendingId = -1;
         while(pendingId != 0) {
-             pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
-            //
+            consoleService.pendingRequestsMenu(transfers);
+            pendingId = consoleService.promptForInt("\nPlease enter transfer ID to approve/reject (0 to cancel):\n");
             Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
             for (Transfer i : transfers) {
                 if (pendingId == i.getTransfer_id()) {
@@ -185,14 +163,14 @@ public class App {
 
                         tenmoService.approveBucks(i);
                         System.out.println("Transfer approved.");
+                        pendingId = 0;
                     } else if (option == 1 && i.getAmount().compareTo(acUser.getBalance()) >= 0) {
                         System.out.println("You don't have enough money to approve this transfer.");
                     }else if (option == 2) {
-
                         tenmoService.rejectTransfer(i);
                         System.out.println("Transfer Rejected");
+                        pendingId = 0;
                     } else if (option == 0) {
-
                         //Don't do anything
                     } else {
                         System.out.println("Invalid input.");
@@ -206,30 +184,23 @@ public class App {
     }
 
     private void sendBucks() {
-
         Account acUser = tenmoService.getAccount(currentUser.getUser().getUsername());
         List<User> listUsers = tenmoService.userList();
         Set<Long> values = new HashSet<>();
-        System.out.println("-------------------------------------------");
-        System.out.println("Users");
-        System.out.println("ID\t\t\t\tName");
-        System.out.println("-------------------------------------------");
         for (User user : listUsers) {
-            System.out.println(user.getId() + "\t\t\t" + user.getUsername());
             values.add(user.getId());
         }
-        System.out.println("---------");
 
+        consoleService.sendBucksMenu(listUsers);
         int sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
 
 
-            while (Objects.equals((long) sendTo, currentUser.getUser().getId()) || (!values.contains((long) sendTo) && sendTo != 0)) {
-                System.out.println("Invalid recipient.");
-                sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
-            }
+        while (Objects.equals((long) sendTo, currentUser.getUser().getId()) || (!values.contains((long) sendTo) && sendTo != 0)) {
+            System.out.println("Invalid recipient.");
+            sendTo = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        }
 
-            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount:");
-
+        BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount:");
 
 
                 while (amountToSend.compareTo(acUser.getBalance()) >= 0 || amountToSend.compareTo(BigDecimal.ZERO) < 0) {
