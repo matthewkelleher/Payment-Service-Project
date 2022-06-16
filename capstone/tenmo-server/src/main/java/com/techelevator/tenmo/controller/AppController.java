@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @PreAuthorize("isAuthenticated()")
+@CrossOrigin
 @RestController
 public class AppController {
 
