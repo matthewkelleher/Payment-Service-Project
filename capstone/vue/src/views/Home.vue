@@ -2,6 +2,8 @@
   <div class="home">
     <h1>Home</h1>
     <p>You must be authenticated to see this</p>
+
+    <b-button id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button>
   </div>
 </template>
 
@@ -10,3 +12,35 @@ export default {
   name: "home"
 };
 </script>
+
+<style socoped>
+
+.home {
+  background-color: rgba(242,249,255)
+}
+#get-tenmo-button {
+  width: 140px;
+  height: 45px;
+  /* font-family: 'Roboto', sans-serif; */
+  /* font-size: 11px; */
+  /* text-transform: uppercase; */
+  /* letter-spacing: 2.5px; */
+  font-weight: bold;
+  color: white;
+  background-color: rgba(0,140,255);
+  border: none;
+  border-radius: 45px;
+  box-shadow: 7px 9px  rgba(72,225,178);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+#get-tenmo-button:hover {
+
+ 
+  box-shadow: 0px 0px 0px rgba(0,140,225);
+
+  transform: translateY(7px) translateX(9px);
+}
+</style>
