@@ -3,7 +3,8 @@
     <h1>Home</h1>
     <p>You must be authenticated to see this</p>
 
-    <b-button id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button>
+    <router-link v-bind:to="{ name: 'mainpage' }"><b-button id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button></router-link>
+    
   </div>
 </template>
 
