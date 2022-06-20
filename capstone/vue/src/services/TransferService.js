@@ -2,19 +2,12 @@ import axios from 'axios';
 
 export default {
 
-//   login(user) {
-//     return axios.post('/login', user)
-//   },
-
-//   register(user) {
-//     return axios.post('/register', user)
-//   }
 
     balance(user) {
     return axios.get('/account/balance', user)
     },
 
-    transfer(transfer, user) {
+    send(transfer, user) {
         return axios.put('/transfer', transfer, user)
     },
 
@@ -36,6 +29,11 @@ export default {
 
     reject(transfer) {
         return axios.put('/reject', transfer)
+    },
+
+    getUserId(username) {
+        console.log("fired")
+        return axios.get(`/id/${username}`)
     }
   
 

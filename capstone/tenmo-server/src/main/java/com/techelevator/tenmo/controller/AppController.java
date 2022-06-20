@@ -20,7 +20,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @CrossOrigin
 @RestController
 public class AppController {
@@ -37,6 +37,12 @@ public class AppController {
     @RequestMapping(path="")
     public List<User> listOfUsers() { return userDao.findAll();}
 
+    @ApiOperation(value = "Get ID By Username", notes = "This method returns a numerical userID based on a Username")
+    @GetMapping(path="/id/{userName}")
+    public long userID(@PathVariable String userName) {
+        System.out.println(userName);
+        return userDao.findByUsername(userName).getId();}
+
     @RequestMapping(path="/account/balance")
     public Account getAnAccount(Principal principal) {
 
@@ -45,21 +51,23 @@ public class AppController {
     @ApiOperation(value = "Bucks Send",
             notes = "This method initiates a transfer of funds between accounts")
     @RequestMapping(path="/transfer", method = RequestMethod.PUT)
-    public void bucksSend(@RequestBody Transfer transfer, Principal principal) {
+    public void bucksSend(@RequestBody Transfer transfer) {
 
-       if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) <= 0 &&
-        transfer.getAccount_from() != transfer.getAccount_to()) {
         transferDao.sendBucks(transfer);
 
-       } else if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) > 0) {
-
-          throw new ResponseStatusException(
-                  HttpStatus.I_AM_A_TEAPOT
-          );
-        } else if(transfer.getAccount_from() == transfer.getAccount_to()) {
-
-           throw new IllegalArgumentException();
-       }
+//       if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) <= 0 &&
+//        transfer.getAccount_from() != transfer.getAccount_to()) {
+//           transferDao.sendBucks(transfer);
+//
+//       } else if(transfer.getAmount().compareTo(accountDao.getAccount(principal.getName()).getBalance()) > 0) {
+//
+//          throw new ResponseStatusException(
+//                  HttpStatus.I_AM_A_TEAPOT
+//          );
+//        } else if(transfer.getAccount_from() == transfer.getAccount_to()) {
+//
+//           throw new IllegalArgumentException();
+//       }
 
         }
 

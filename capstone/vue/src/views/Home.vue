@@ -1,20 +1,25 @@
 <template>
   <div class="home">
     <h1>Home</h1>
-    <p>You must be authenticated to see this</p>
+    <p>{{this.$store.state.payClicked}}</p>
 
-    <router-link v-bind:to="{ name: 'mainpage' }"><b-button id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button></router-link>
+    <router-link v-bind:to="{ name: 'mainpage' }"><b-button v-on:click="payClicked()" id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button></router-link>
     
   </div>
 </template>
 
 <script>
 export default {
-  name: "home"
+  name: "home",
+  methods: {
+      payClicked() {
+      this.$store.commit("PAY_CLICKED", false);
+    }
+  }
 };
 </script>
 
-<style socoped>
+<style scoped>
 
 .home {
   background-color: rgba(242,249,255)
