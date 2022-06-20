@@ -122,16 +122,6 @@ public class JdbcTransferDao implements TransferDao {
         String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql3, 1, 1, senderId , recipientId, transfer.getAmount());
 
-//        String sql = "UPDATE account" +
-//                " SET balance = balance - ?" +
-//                " WHERE user_id = ?";
-//        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccount_from());
-//
-//        String sql2 = "UPDATE account" +
-//                " SET balance = balance + ?" +
-//                " WHERE user_id = ?";
-//        jdbcTemplate.update(sql2, transfer.getAmount(), transfer.getAccount_to());
-
         return transfer;
 
 
