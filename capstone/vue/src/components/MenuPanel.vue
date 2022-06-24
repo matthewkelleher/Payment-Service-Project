@@ -4,10 +4,10 @@
    
     <b-button pill id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">Pay or Request</b-button>  
     <p>${{user.balance}} in TEnmo</p>
-    <p>Incomplete</p>
-    <p div v-on:click="showStatements()">Statements</p>
-    <p>Search</p>
-    <p>Logout</p>
+    <p class="menuitem" v-on:click="showPending()">Incomplete</p>
+    <p class="menuitem" v-on:click="showStatements()">Statements</p>
+    <p class="menuitem">Search</p>
+    <p class="menuitem">Logout</p>
   
   
   
@@ -44,12 +44,19 @@ created() {
 methods: {
   payClicked() {
     this.$store.commit("SHOW_STATEMENTS", false);
+    this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("PAY_CLICKED", true);
 
   },
   showStatements() {
     this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_STATEMENTS", true);
+  },
+  showPending() {
+    this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("SHOW_STATEMENTS", false);
+    this.$store.commit("SHOW_PENDING", true);
   }
 },
 }
@@ -58,5 +65,14 @@ methods: {
 <style>
 #pay-or-request {
   background-color: rgba(0,140,255);
+}
+
+.menuitem {
+  font-weight: bold;
+  
+}
+.menuitem:hover {
+  cursor: pointer; 
+  color: rgba(0,140,255)
 }
 </style>
