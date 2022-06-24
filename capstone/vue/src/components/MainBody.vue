@@ -1,6 +1,8 @@
 <template>
+<div>
 <div v-if="this.$store.state.payClicked == true">
 {{transfer}}
+{{this.user}}
 {{this.toUserName}}
   <p>TEnmo | Pay & Request</p>
     <div class="autocomplete">
@@ -11,7 +13,40 @@
 
 
 </div>
+  <div class="statements" v-if="this.$store.state.showStatements == true">
+  <table id="statementTable">
+    <thead>
+    <tr>
+      <th>To</th>
+      <th>From</th>
+      <th>Type</th>      
+    </tr>
+    </thead>
+    <tbody>
+      <tr v-for="pastTransfer in listOfTransfers"
+  v-bind:key="pastTransfer.id">
+    <td>{{pastTransfer.usernameTo}}</td>
+    <td>{{pastTransfer.usernameFrom}}</td>
+    <td>{{pastTransfer.transfer_type_desc}}</td>
+    
+  </tr>
+    </tbody>
+    </table>
+  
+  
+  <div class="oldTransfer">
+    
+  </div>
+  
+  </div>
+   
 
+ 
+  
+  </div>
+ 
+  
+  
 </template>
 
 <script>
@@ -32,20 +67,37 @@ data() {
    },
    user: {
     userId: null,
-    balance: null
-   }
+    balance: null,
+    userName: null
+   },
+   listOfTransfers : [],
     }
 },
-created() {
-  TransferService.balance().then((response) => {
+// created() {
+//   TransferService.balance().then((response) => {
+//     this.user.userId = response.data.userId;
+//     this.transfer.account_from = response.data.userId;
+//     this.transfer.account_to = response.data.userId;
+//     this.user.balance = response.data.balance;
+//     this.user.userName = response.data.username;
+   
+//   },
+//     )
+// },
+updated() {
+  if(this.$store.state.showStatements == true) {
+    this.listTransfers()
+  }
+},
+mounted() {
+    TransferService.balance().then((response) => {
     this.user.userId = response.data.userId;
     this.transfer.account_from = response.data.userId;
     this.transfer.account_to = response.data.userId;
     this.user.balance = response.data.balance;
+    this.user.userName = response.data.username;
+   
   })
-},
-mounted() {
-    
 },
 methods: {
     transferMoney() {
@@ -63,6 +115,12 @@ methods: {
         
 
 },
+  listTransfers() {
+    TransferService.list().then((response) => {
+      this.listOfTransfers = response.data;
+      console.log(response.data)
+    })
+  },
     // getId() {
     //     console.log(this.toUserName)
     //     TransferService.getUserId(this.toUserName).then((response) => {
@@ -76,7 +134,7 @@ methods: {
             this.transfer.account_from = response.data;
             TransferService.request(this.transfer).then((response) => {
             console.log(response.data);
-            this.transfer.account_from = 0;
+            this.transfer.account_from = this.user.userId;
             this.transfer.account_to = 0;
             this.amount = 0;
         }) 

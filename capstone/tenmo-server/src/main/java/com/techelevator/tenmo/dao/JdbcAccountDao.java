@@ -38,9 +38,10 @@ public class JdbcAccountDao implements AccountDao {
                 "(SELECT user_id FROM tenmo_user WHERE username ILIKE ?)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
         Account account = new Account();
-        while(results.next()) {
+        if(results.next()) {
             account = mapRowToAccounts(results);
         }
+        account.setUsername(username);
         return account;
     }
 

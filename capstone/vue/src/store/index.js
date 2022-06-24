@@ -21,6 +21,7 @@ export default new Vuex.Store({
     token: currentToken || '',
     user: currentUser || {},
     payClicked: false,
+    showStatements: false,
   },
   mutations: {
     SET_AUTH_TOKEN(state, token) {
@@ -41,6 +42,9 @@ export default new Vuex.Store({
     },
     PAY_CLICKED(state, bool) {
       state.payClicked = bool;
+    },
+    SHOW_STATEMENTS(state, bool) {
+      state.showStatements = bool;
     }
   }
 })

@@ -10,6 +10,7 @@ public class Account {
     private String accountId;
     @NotBlank
     private BigDecimal balance;
+    private String username;
 
     public String getUserId() {
         return userId;
@@ -19,7 +20,13 @@ public class Account {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getAccountId() {
         return accountId;
