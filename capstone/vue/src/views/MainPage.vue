@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="left-panel">
-      {{this.$store.state.payClicked}}
+     
     <MenuPanel/>
     </div>
     <div class="main-body">
@@ -29,19 +29,23 @@ data() {
 
 <style>
 .home {
-  height: 100%;
+  height: 100vh;
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 1fr 3fr;
   grid-template-areas:
-  "left-panel main-body"
+  "left-panel main-body";
+  background-color: white;
+  
 }
 .left-panel {
-  border-right: 1px solid grey;
-  height: 100%;
+  border-right: 1px solid lightgrey;
+  margin-left: 10%;
+ 
 }
 
 .main-body {
   margin-left: auto;
   margin-right: auto;
+  
 }
 </style>

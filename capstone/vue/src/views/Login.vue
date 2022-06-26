@@ -1,39 +1,40 @@
 <template>
-  <div id="login" class="text-center">
-    <form class="form-signin" @submit.prevent="login">
-      <h1 class="h3 mb-3 font-weight-normal">Please Sign In</h1>
-      <div
-        class="alert alert-danger"
-        role="alert"
-        v-if="invalidCredentials"
-      >Invalid username and password!</div>
-      <div
-        class="alert alert-success"
-        role="alert"
-        v-if="this.$route.query.registration"
-      >Thank you for registering, please sign in.</div>
-      <label for="username" class="sr-only">Username</label>
-      <input
-        type="text"
-        id="username"
-        class="form-control"
-        placeholder="Username"
-        v-model="user.username"
-        required
-        autofocus
-      />
-      <label for="password" class="sr-only">Password</label>
-      <input
-        type="password"
-        id="password"
-        class="form-control"
-        placeholder="Password"
-        v-model="user.password"
-        required
-      />
+  <div id="login-page">
+    <span id="headline"><h2>Sign in to Tenmo</h2> {{user}}</span>
+    <b-form @submit.prevent="login" class="login-form">
+      <b-form-group
+        id="username-input"
+        label="Username"
+        label-for="input-1"
+        >
+        <b-form-input 
+          id="input-1"
+          v-model="user.username"
+          required>
+        </b-form-input>
+        </b-form-group>
+     
+      <b-form-group
+        id="password-input"
+        label="Password"
+        label-for="input-2"
+        >
+        <b-form-input 
+          id="input-2"
+          v-model="user.password"
+          required>
+        </b-form-input>
+        </b-form-group>
+        <div id="lastline">
+        <div>Forgot Password?</div>
+        <b-button id="submit-button" type="submit">Sign In</b-button>
+        </div>
+      </b-form>
+
+      <div>
       <router-link :to="{ name: 'register' }">Need an account?</router-link>
-      <button type="submit">Sign in</button>
-    </form>
+      </div>
+   
   </div>
 </template>
 
@@ -60,7 +61,7 @@ export default {
           if (response.status == 200) {
             this.$store.commit("SET_AUTH_TOKEN", response.data.token);
             this.$store.commit("SET_USER", response.data.user);
-            this.$router.push("/");
+            this.$router.push("/mainpage");
           }
         })
         .catch(error => {
@@ -74,3 +75,78 @@ export default {
   }
 };
 </script>
+<style scoped>
+
+.login-form {
+  height: 25%;
+  width: 25%;
+  margin-left: auto;
+  margin-right: auto;  
+  width: 33%;
+  height: 25%;
+  background-color: rgb(243, 241, 241);
+  vertical-align: middle;
+  padding: 50px;
+  box-sizing: border-box;
+  outline: none;
+  
+  
+}
+#input-1 {
+background-color: rgb(243, 241, 241);
+border-top: none;
+border-right: none;
+border-left: none;
+}
+
+#input-1:focus {
+  border-color: none !important;
+  box-shadow: none;
+}
+
+#input-2:focus {
+  border-color: none !important;
+  box-shadow: none;
+}
+
+
+#input-2 {
+background-color: rgb(243, 241, 241);
+border-top: none;
+border-right: none;
+border-left: none;
+}
+
+#login-page {
+  background-color: white;
+ 
+  
+ 
+  
+}
+
+h2 {
+  vertical-align: middle;
+}
+
+#submit-button {
+  font-family: serif;
+  font-weight: bold;
+  
+}
+
+#username-input {
+font-variant: all-small-caps;
+}
+
+#password-input {
+font-variant: all-small-caps;
+
+}
+
+#lastline {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+

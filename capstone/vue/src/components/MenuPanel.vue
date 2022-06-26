@@ -1,13 +1,19 @@
 <template>
   
-  <div>
-   
-    <b-button pill id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">Pay or Request</b-button>  
+  <div id="menubar">
+    <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><p id="tenmo-image">tenmo</p></router-link>
+    <MenuPanelBlurb/>
+    <b-button pill size="lg" id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">Pay or Request</b-button>  
+    
+    <br>
+    <br>
     <p>${{user.balance}} in TEnmo</p>
+    <br>
+    <p class="menuitem">Search</p>
     <p class="menuitem" v-on:click="showPending()">Incomplete</p>
     <p class="menuitem" v-on:click="showStatements()">Statements</p>
-    <p class="menuitem">Search</p>
-    <p class="menuitem">Logout</p>
+    
+    <p class="menuitem">Log out</p>
   
   
   
@@ -16,9 +22,13 @@
 
 <script>
 import TransferService from '../services/TransferService'
+import MenuPanelBlurb from '../components/MenuPanelBlurb'
 
 export default {
 name: "menu-panel",
+components: {
+  MenuPanelBlurb
+},
 props: {
 
 },
@@ -40,6 +50,10 @@ created() {
     this.user.balance = response.data.balance;
     this.user.userName = response.data.username;
   })
+ 
+},
+mounted() {
+ 
 },
 methods: {
   payClicked() {
@@ -64,15 +78,30 @@ methods: {
 
 <style>
 #pay-or-request {
-  background-color: rgba(0,140,255);
-}
-
-.menuitem {
+  background-color: rgba(0,116,222);
   font-weight: bold;
   
+  
 }
+
+#pay-or-request.hover {
+
+}
+
 .menuitem:hover {
   cursor: pointer; 
   color: rgba(0,140,255)
+}
+
+#tenmo-image
+{
+  font-weight: 800;
+  font-size: 30px;
+  font-style: italic;
+  color: rgba(0,140,255);
+}
+
+#menubar {
+  background-color: white;
 }
 </style>

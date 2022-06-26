@@ -1,9 +1,9 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
-    <p>{{this.$store.state.payClicked}}</p>
+   
+    
 
-    <router-link v-bind:to="{ name: 'mainpage' }"><b-button v-on:click="payClicked()" id="get-tenmo-button" pill variant="primary">Get TEnmo</b-button></router-link>
+    <router-link v-bind:to="{ name: 'mainpage' }"><b-button v-on:click="payClicked()" id="get-tenmo-button" pill variant="primary">Get Tenmo</b-button></router-link>
     
   </div>
 </template>
@@ -40,6 +40,10 @@ export default {
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
+  text-align: center;
+  
+  display: inline-block;
+  
 }
 
 #get-tenmo-button:hover {

@@ -1,5 +1,6 @@
 <template>
 <div>
+ 
 <div v-if="this.$store.state.payClicked == true">
 {{transfer}}
 {{this.user}}
