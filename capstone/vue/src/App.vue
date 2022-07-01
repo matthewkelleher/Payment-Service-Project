@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav" v-if="this.currentRouteName != 'mainpage'">
      
-      <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" class="navitem" style="vertical-align:middle; color: rgba(0,140,255)" >tenmo</span></router-link>
+      <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'logout' }"><span class="navitem"  v-if="$store.state.token != ''">Log out</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }"><span class="navitem" v-if="$store.state.token == ''">Log in</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'register'}">
@@ -35,10 +35,12 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
 
 html, body {
-  font-family: 'Roboto', sans-serif;
+  font-family: Helvetica, sans-serif;
   color: rgb(85,88,94);
   
 }
+
+
 
 #app {
 
@@ -46,7 +48,7 @@ html, body {
 }
 #nav {
   justify-content: space-evenly;
-  margin-left: 20%;
+  margin-left: 5%;
   margin-right: 20%;
   display: flex;
   
@@ -60,8 +62,11 @@ html, body {
 
 
 
+
 .navitem {
   color: black;
+  font-family: "Athletics";
+  font-weight: 500;
 }
 
 a:hover {

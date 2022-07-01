@@ -3,12 +3,13 @@
  
 <div v-if="this.$store.state.payClicked == true" style="text-align: left">
 
-  <p>TEnmo | Pay & Request</p>
+  <p style="font-weight: 500">TEnmo | Pay & Request</p>
     <div class="autocomplete">
-    <b-form-input v-model="transfer.amount" placeholder="0"></b-form-input>
-    <b-form-input placeholder="Username" v-model="toUserName"></b-form-input>
+    <span class="input-dollar"><b-form-input id="money-input" v-model="transfer.amount" placeholder="0" type="number" ></b-form-input></span>
+    <b-form-input placeholder="To" v-model="toUserName"></b-form-input>
+    <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
     </div>
-    <b-button pill v-on:click="transferMoney()">Pay</b-button> <b-button pill v-on:click="requestMoney()">Request</b-button>
+    
 
 
 </div>
@@ -201,5 +202,46 @@ methods: {
 {
   padding-bottom: 20px;
   
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+#money-input {
+  width: 100px;
+  height: 100px;
+  font-size: 32px;
+}
+
+.input-dollar {
+    position: relative;
+}
+.input-dollar input {
+    padding-left:18px;
+}
+.input-dollar:before {
+    position: absolute;
+    top: 0;
+    content:"$";
+    left: 5px;
+}
+
+.autocomplete {
+ width:50%;
+ height:500px;
+ margin:0 auto;
+ 
+ position:absolute;
+ left:50%;
+ top:50%;
+ margin-left:0px;
+ margin-top:-250px;
+}
+
+.pay-request-buttons {
+  background-color: rgba(0,140,255)!important;
+  width: 200px;
+  font-weight: bold!important;
 }
 </style>
