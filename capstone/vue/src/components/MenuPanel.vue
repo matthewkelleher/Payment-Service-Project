@@ -128,8 +128,10 @@ methods: {
   font-weight: 800;
   font-size: 40px;
   font-style: italic;
-  
+  text-decoration: none;
 }
+
+
 
 #menubar {
   background-color: white;
@@ -151,5 +153,9 @@ methods: {
   font-size: 30px;
   font-style: italic;
   color: white !important;
+}
+
+#menubar {
+
 }
 </style>

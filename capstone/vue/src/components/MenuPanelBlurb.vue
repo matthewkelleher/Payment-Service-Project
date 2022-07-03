@@ -1,6 +1,9 @@
 <template>
 <div id="blah">
-    <span id="image-here"><span id="tricky">{{this.username.charAt(0)}}</span></span>
+    <span id="image-here" :style="{'background-image':'url(' + image + ')'}">
+        
+        <!-- <img class="headshot" :src= "image"/>         -->
+  </span>
   <p id="welcome">Hi, {{this.username}} </p>
   </div>
 </template>
@@ -9,8 +12,12 @@
 export default {
 name: 'menu-panel-blurb',
 username: '',
+userId: 0,
+image: '',
 created() {
     this.username = this.$store.state.user.username;
+    this.userId = this.$store.state.activeUser.accountId;
+    this.image = this.userId + '.jpg';
 }
 }
 </script>
@@ -27,12 +34,12 @@ created() {
     width: 100px;
     background-color: white;
     border-radius: 50%;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    
+  
+    background: padding-box;
     border: 1px solid lightslategrey;
     text-align: center;
     grid-area: a;
+    background-size: 100%;
 }
 
 #blah {
@@ -45,8 +52,5 @@ created() {
     margin-right: auto;
 }
 
-#tricky {
-   margin-left: auto;
-   margin-right: auto;
-}
+
 </style>

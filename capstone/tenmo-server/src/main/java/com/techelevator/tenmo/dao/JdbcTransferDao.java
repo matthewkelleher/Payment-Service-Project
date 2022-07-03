@@ -129,7 +129,7 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     public List<Transfer> pendingTransfers(String username) {
-        String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, t. note, y.transfer_status_desc, " +
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, t.note, y.transfer_status_desc, " +
                 "t.account_from, t.account_to, t.amount, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
                 "JOIN account a ON t.account_to = a.account_id " +
                 "JOIN account f ON t.account_from = f.account_id " +

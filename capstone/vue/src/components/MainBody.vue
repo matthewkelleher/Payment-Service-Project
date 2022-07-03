@@ -5,10 +5,10 @@
 
   <p style="font-weight: 500">TEnmo | Pay & Request</p>
     <div class="autocomplete">
-    <span class="input-dollar"><b-form-input id="money-input" v-model="transfer.amount" placeholder="0" min="0.01"
-    type="number"></b-form-input></span>
-    <b-form-input placeholder="To" v-model="toUserName"></b-form-input>
-    <b-form-input placeholder="Note" v-model="transfer.note"></b-form-input>
+    <b-form-input class="pay-request-input" id="money-input" 
+    onkeydown="this.style.minWidth = (this.value.length + 3) + 'ch'" placeholder="0" v-model="transfer.amount" type="number"></b-form-input>
+    <b-form-input class="pay-request-input" placeholder="To" v-model="toUserName"></b-form-input>
+    <b-form-input class="pay-request-input" placeholder="Note" v-model="transfer.note"></b-form-input>
     <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
     </div>
     
@@ -17,21 +17,32 @@
 </div>
   <div class="statements" v-if="this.$store.state.showStatements == true">
    <h3 id="completed-header">Completed Transactions</h3>
-   {{user.username}}
+   {{user.userName}}
  
    
    
     <div class="transaction-container">
       <div v-for="pastTransfer in listOfTransfers"
-  v-bind:key="pastTransfer.id" class="past-transaction">
-  <div class="inner-transaction">
+  v-bind:key="pastTransfer.id">
+  <div class="past-transaction">
+  <div class="inner-transaction" grid-area=b>
   <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
     <span> paid </span><span style="font-weight:bold">{{pastTransfer.usernameTo}}</span>
+    </div>
+    <div id="statement-amount" grid-area=c>
     <span v-if="pastTransfer.usernameFrom == user.userName" style="color: red"> -${{pastTransfer.amount}}</span>
     <span v-else style="color: green">&ensp;${{pastTransfer.amount}}</span>
     </div>
-  </div>
+    <div id="statement-image-container" grid-area=a>
+    <img id="statement-image" src="2001.jpg"/>
     </div>
+    <div id="statement-note" grid-area=d>
+    <span>{{pastTransfer.note}}</span>
+    </div>
+    </div>
+    </div>
+  </div>
+    
     
   
   
@@ -39,29 +50,21 @@
   
   </div>
   <div v-if="this.$store.state.showPending == true">
-  {{pendingTransfers}}
-  <table id="pendingTable">
-    <thead>
-    <tr>
-      <th>To</th>
-      <th>From</th>
-      <th>Type</th>      
-    </tr>
-    </thead>
-    <tbody>
-      <tr v-for="pastTransfer in pendingTransfers"
-  v-bind:key="pastTransfer.id">
-    <td style="font-weight: bold">{{pastTransfer.usernameTo}}</td>
-    <td>{{pastTransfer.usernameFrom}}</td>
-    <td>{{pastTransfer.transfer_type_desc}}</td>
-    <td>{{pastTransfer.amount}}</td>
-    
-  </tr>
-    </tbody>
-    </table>
-  
-  </div> 
 
+
+      <div v-for="pastTransfer in pendingTransfers"
+  v-bind:key="pastTransfer.id">
+  <div class="grid-container">
+    <div class="pending-statement"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
+     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
+   
+    <div class="pending-amount">{{pastTransfer.amount}}</div>
+    <div class="pending-note">{{pastTransfer.note}}</div>
+    <div class="pending-image"><img src="2001.jpg" id="statement-image"/></div>
+    <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending">Approve</b-button></div>
+  </div>
+  </div> 
+</div>
  
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
     <div>Search</div>
@@ -76,8 +79,8 @@
   
 
  
-  
-  
+  <!-- "
+   -->
 </template>
 
 <script>
@@ -94,7 +97,7 @@ data() {
     transfer: {
     account_from: 0,
     account_to: 0,
-    amount: 0,
+    amount: '',
     note: '',
     
     
@@ -218,16 +221,20 @@ body {
   font-family: "Athletics";
 }
 
+
 .past-transaction {
+  display: grid;
+  grid-template-columns: 4;
+  grid-template-rows: 2;
+  grid-template-areas:
+  "a b b c"
+  "a d d d";
   border-bottom: 1px solid lightgrey;
-  
- 
- 
 }
 
 .inner-transaction {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /* padding-top: 10px;
+  padding-bottom: 10px; */
 }
 
 .statements {
@@ -242,6 +249,12 @@ body {
  margin-top:-250px;
 }
 
+#statement-image {
+  height: 100x;
+  width: 100px;
+  border-radius: 50%;
+}
+
 #completed-header
 {
   padding-bottom: 20px;
@@ -253,23 +266,24 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 #money-input {
-  width: 100px;
+  width: 64px!important;
   height: 100px;
   font-size: 32px;
 }
 
-.input-dollar {
+/* .input-dollar {
     position: relative;
+    
 }
 .input-dollar input {
     padding-left:18px;
-}
-.input-dollar:before {
+} */
+/* .input-dollar:before {
     position: absolute;
-    top: 0;
+    top: 5;
     content:"$";
     left: 5px;
-}
+} */
 
 .autocomplete {
  width:50%;
@@ -313,5 +327,67 @@ input[type=number]::-webkit-outer-spin-button {
   width: 50%;
 }
 
+.pay-request-input {
+  width: 400px!important;
+  
+}
 
+.grid-container {
+  display: grid;
+  border-bottom: 1px solid lightgrey;
+  grid-template-columns: repeat(4, 1fr);
+  padding-top: 5%;
+  padding-bottom: 5%;
+  padding-left: 5%;
+ 
+}
+
+.pending-image-container {
+ 
+}
+.pending-image {
+
+  grid-column-start: 1;
+  grid-column-end: 2;
+  max-width: 100px;
+}
+
+.pending-statement {
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  max-width: 200px;
+
+}
+
+.pending-amount {
+  grid-column-start: 3;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  max-width: 100px;
+}
+
+.pending-note {
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 2;
+  max-width: 300px;
+}
+
+.pending-button {
+  grid-column-start: 4;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-start: 1;
+  max-width: 100px;
+
+}
+
+.pending {
+  background-color: rgba(0,140,255)!important;
+  cursor: pointer;
+}
 </style>

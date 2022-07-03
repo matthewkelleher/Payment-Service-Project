@@ -10,6 +10,7 @@ public class Account {
     private String accountId;
     @NotBlank
     private BigDecimal balance;
+    @NotBlank
     private String username;
     private String userImage;
 

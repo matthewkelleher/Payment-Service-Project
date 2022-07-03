@@ -45,7 +45,17 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
+    public Account getImage(String username) {
+        String sql = "SELECT image FROM account WHERE user_id =" +
+                "(SELECT user_id FROM tenmo_user WHERE username ILIKE ?)";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+        Account account = new Account();
+        if(results.next()) {
+            account = mapRowToAccounts(results);
+        }
 
+        return account;
+    }
 
 
 
