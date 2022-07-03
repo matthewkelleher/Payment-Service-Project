@@ -15,31 +15,25 @@
 
 
 </div>
-  <div class="statements" v-if="this.$store.state.showStatements == true">
+  <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length >= 1">
    <h3 id="completed-header">Completed Transactions</h3>
-   {{user.userName}}
- 
+  
    
    
     <div class="transaction-container">
       <div v-for="pastTransfer in listOfTransfers"
   v-bind:key="pastTransfer.id">
-  <div class="past-transaction">
-  <div class="inner-transaction" grid-area=b>
-  <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
-    <span> paid </span><span style="font-weight:bold">{{pastTransfer.usernameTo}}</span>
-    </div>
-    <div id="statement-amount" grid-area=c>
-    <span v-if="pastTransfer.usernameFrom == user.userName" style="color: red"> -${{pastTransfer.amount}}</span>
-    <span v-else style="color: green">&ensp;${{pastTransfer.amount}}</span>
-    </div>
-    <div id="statement-image-container" grid-area=a>
-    <img id="statement-image" src="2001.jpg"/>
-    </div>
-    <div id="statement-note" grid-area=d>
-    <span>{{pastTransfer.note}}</span>
-    </div>
-    </div>
+  <div class="past-grid-container">
+    <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
+     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
+   
+    <div class="past-amount">
+      <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
+      <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
+    <div class="past-note">{{pastTransfer.note}}</div>
+    <div class="past-image"><img src="2001.jpg" id="statement-image"/></div>
+   
+  </div>
     </div>
   </div>
     
@@ -49,23 +43,31 @@
   
   
   </div>
-  <div v-if="this.$store.state.showPending == true">
-
-
+  <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length ==0">Nothing here yet.</div>
+  <div class="pending-statements" v-if="this.$store.state.showPending == true && this.pendingTransfers.length >= 1">
+  
+<h3 id="pending-header">Pending Transactions</h3>
+  
       <div v-for="pastTransfer in pendingTransfers"
   v-bind:key="pastTransfer.id">
   <div class="grid-container">
     <div class="pending-statement"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
      {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
    
-    <div class="pending-amount">{{pastTransfer.amount}}</div>
+    <div class="pending-amount">
+      <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
+      <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span>
+    </div>
     <div class="pending-note">{{pastTransfer.note}}</div>
     <div class="pending-image"><img src="2001.jpg" id="statement-image"/></div>
     <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending">Approve</b-button></div>
   </div>
   </div> 
+  
 </div>
- 
+
+<div v-if="this.$store.state.showPending == true && this.pendingTransfers.length == 0">Nothing to see here homie.</div>
+
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
     <div>Search</div>
    
@@ -176,6 +178,9 @@ methods: {
     })
     
   },
+  formatMoney(number) {
+  return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+},
   getPending() {
     TransferService.pending().then((response) => {
       this.pendingTransfers = response.data;
@@ -342,8 +347,47 @@ input[type=number]::-webkit-outer-spin-button {
  
 }
 
-.pending-image-container {
+.past-grid-container {
+  display: grid;
+  border-bottom: 1px solid lightgrey;
+  grid-template-columns: repeat(3, 1fr);
+  padding-top: 5%;
+  padding-bottom: 5%;
+  padding-left: 5%;
+}
+
+.past-image-container {
+
+}
+
+.past-statement {
+ grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  
+}
+
+.past-amount {
+grid-column-start: 3;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 1;
  
+}
+
+.past-note {
+grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 2;
+  
+}
+
+.past-image {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  
 }
 .pending-image {
 
@@ -390,4 +434,22 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: rgba(0,140,255)!important;
   cursor: pointer;
 }
+
+#pending-header {
+  padding-bottom: 20px;
+}
+
+.pending-statements {
+  
+ width:50%;
+ height:500px;
+ margin:0 auto;
+ 
+ position:absolute;
+ left:50%;
+ top:50%;
+ margin-left:-250px;
+ margin-top:-250px;
+}
+
 </style>
