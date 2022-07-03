@@ -18,6 +18,7 @@ public class Transfer {
     private String transfer_type_desc;
     private String transfer_status_desc;
     private String usernameTo;
+    private String note;
 
     public String getUsernameTo() {
         return usernameTo;
@@ -83,7 +84,13 @@ public class Transfer {
         this.usernameFrom = usernameFrom;
     }
 
+    public String getNote() {
+        return note;
+    }
 
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public Transfer() {
     }
@@ -105,7 +112,7 @@ public class Transfer {
     }
 
     public Transfer(int account_from,
-                    int account_to, BigDecimal amount, String usernameFrom, String usernameTo, String transfer_type_desc, String transfer_status_desc) {
+                    int account_to, BigDecimal amount, String usernameFrom, String usernameTo, String transfer_type_desc, String transfer_status_desc, String note) {
         this.transfer_id = transfer_id;
         this.transfer_type_id = transfer_type_id;
         this.transfer_status_id = transfer_status_id;
@@ -116,6 +123,7 @@ public class Transfer {
         this.transfer_type_desc = transfer_type_desc;
         this.transfer_status_desc = transfer_status_desc;
         this.usernameTo = usernameTo;
+        this.note = note;
 
 
     }

@@ -1,6 +1,7 @@
 <template>
   
-  <div id="menubar">
+  <div id="menubar" :key="checkIt">
+    
     <router-link @click="allFalse()" style="text-decoration: none" v-bind:to="{ name: 'home' }"><p id="tenmo-logo">tenmo</p></router-link>
     <MenuPanelBlurb/>
     <b-button pill size="lg" id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">
@@ -8,9 +9,9 @@
     
     <br>
     <br>
-    <p>${{user.balance}} in Tenmo</p>
+    <p>{{formatMoney(this.user.balance)}} in Tenmo</p>
     <br>
-    <p class="menuitem">Search</p>
+    <p class="menuitem" v-on:click="showUserSearch()">Search</p>
     <p class="menuitem" v-on:click="showPending()">Incomplete</p>
     <p class="menuitem" v-on:click="showStatements()">Statements</p>
     
@@ -41,7 +42,7 @@ data() {
     accountId: null,
     balance: null,   
    },
-   
+  checkIt: 0
   }
 },
 created() {
@@ -50,36 +51,54 @@ created() {
     this.user.accountId = response.data.accountId;
     this.user.balance = response.data.balance;
     this.user.userName = response.data.username;
+    
   })
  
 },
+
+
 mounted() {
- 
+  this.$store.commit("SET_ACTIVE_USER", this.user);
 },
 methods: {
   payClicked() {
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("PAY_CLICKED", true);
+    this.$store.commit("SHOW_USER_SEARCH", false);
 
   },
   showStatements() {
     this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_STATEMENTS", true);
+    this.$store.commit("SHOW_USER_SEARCH", false);
   },
   showPending() {
     this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", true);
+    this.$store.commit("SHOW_USER_SEARCH", false);
+  },
+  showUserSearch() {
+    this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("SHOW_STATEMENTS", false);
+    this.$store.commit("SHOW_PENDING", false);
+    this.$store.commit("SHOW_USER_SEARCH", true);
   },
   allFalse() {
     
     this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
-  }
+    this.$store.commit("SHOW_USER_SEARCH", false);
   },
+
+  formatMoney(number) {
+  return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+}
+}
+ 
 }
 </script>
 

@@ -21,9 +21,10 @@ components: {
 },
 data() {
     return {
-
+      
     }
-}
+},
+
 }
 </script>
 
@@ -44,8 +45,7 @@ data() {
 }
 
 .main-body {
-  margin-left: auto;
-  margin-right: auto;
+ 
   
 }
 </style>

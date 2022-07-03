@@ -34,6 +34,9 @@ export default {
     getUserId(username) {
         console.log("fired")
         return axios.get(`/id/${username}`)
+    },
+    getUsernames(username) {
+        return axios.get(`/usernames/${username}`)
     }
   
 

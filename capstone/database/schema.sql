@@ -38,6 +38,7 @@ CREATE TABLE account (
 	account_id int NOT NULL DEFAULT nextval('seq_account_id'),
 	user_id int NOT NULL,
 	balance decimal(13, 2) NOT NULL,
+	userImage varchar(200),
 	CONSTRAINT PK_account PRIMARY KEY (account_id),
 	CONSTRAINT FK_account_tenmo_user FOREIGN KEY (user_id) REFERENCES tenmo_user (user_id)
 );
@@ -54,6 +55,7 @@ CREATE TABLE transfer (
 	account_from int NOT NULL,
 	account_to int NOT NULL,
 	amount decimal(13, 2) NOT NULL,
+	note varchar(200), 
 	CONSTRAINT PK_transfer PRIMARY KEY (transfer_id),
 	CONSTRAINT FK_transfer_account_from FOREIGN KEY (account_from) REFERENCES account (account_id),
 	CONSTRAINT FK_transfer_account_to FOREIGN KEY (account_to) REFERENCES account (account_id),

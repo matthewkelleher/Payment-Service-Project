@@ -5,6 +5,7 @@
       <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'logout' }"><span class="navitem"  v-if="$store.state.token != ''">Log out</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }"><span class="navitem" v-if="$store.state.token == ''">Log in</span></router-link>
+      <div class="dropdown">About ⌄<div class="dropdown-content">Why?</div></div>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'register'}">
       <b-button pill id="get-tenmo" v-on:click="payClicked()" title="Get TEnmo"><span id="get-tenmo-inner"><span class="logo-t">t</span>&emsp;Get Tenmo</span></b-button></router-link>
     </div>
@@ -21,6 +22,9 @@ export default {
   methods: {
     payClicked() {
       this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("SHOW_STATEMENTS", false);
+    this.$store.commit("SHOW_PENDING", false);
+    this.$store.commit("SHOW_USER_SEARCH", false);
     }
   }
 }
@@ -78,7 +82,7 @@ a:hover {
   background-color: white;
   color: black;
   font-size: 12px;
-  display: inline-block;
+  display: inline;
 }
 
 #get-tenmo:hover {
@@ -115,5 +119,21 @@ a:hover {
 
 #get-tenmo-inner {
   text-align: center;
+  font-weight: 500;
+}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown {
+  font-weight: 500;
 }
 </style>

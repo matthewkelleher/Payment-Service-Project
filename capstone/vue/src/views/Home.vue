@@ -25,7 +25,10 @@ export default {
   name: "home",
   methods: {
       payClicked() {
-      this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("SHOW_STATEMENTS", false);
+    this.$store.commit("SHOW_PENDING", false);
+    this.$store.commit("SHOW_USER_SEARCH", false);
     }
   }
 };

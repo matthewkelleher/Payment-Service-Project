@@ -13,7 +13,7 @@ public class AccountTest {
 
     @Before
     public void setup() {
-        this.testItem = new Account("testID testID", "accountID", new BigDecimal("500") );
+        this.testItem = new Account("testID testID", "accountID", new BigDecimal("500"), "whatever" );
     }
 
     @Test
@@ -22,6 +22,7 @@ public class AccountTest {
         assertEquals("testID testID", testItem.getUserId());
         assertEquals("accountID", testItem.getAccountId());
         assertEquals(new BigDecimal("500"), testItem.getBalance());
+        assertEquals("whatever", testItem.getImage());
     }
 
 }

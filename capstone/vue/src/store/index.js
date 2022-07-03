@@ -23,6 +23,13 @@ export default new Vuex.Store({
     payClicked: false,
     showStatements: false,
     showPending: false,
+    showUserSearch: false,
+    activeUser: {
+    userName: null,
+    userId: null,
+    accountId: null,
+    balance: null,  
+    },
   },
   mutations: {
     SET_AUTH_TOKEN(state, token) {
@@ -49,6 +56,19 @@ export default new Vuex.Store({
     },
     SHOW_PENDING(state, bool) {
       state.showPending = bool;
+    },
+    SHOW_USER_SEARCH(state, bool) {
+      state.showUserSearch = bool;
+    },
+    SET_ACTIVE_USER(state, user) {
+      state.activeUser = user;
+      
+      
+    },
+    SUBTRACT_FUNDS(state, amount) {
+      state.activeUser.balance -= amount;
+      console.log("This happened.")
+      console.log(state.activeUser.balance)
     }
   }
 })

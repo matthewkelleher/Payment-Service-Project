@@ -5,8 +5,10 @@
 
   <p style="font-weight: 500">TEnmo | Pay & Request</p>
     <div class="autocomplete">
-    <span class="input-dollar"><b-form-input id="money-input" v-model="transfer.amount" placeholder="0" type="number" ></b-form-input></span>
+    <span class="input-dollar"><b-form-input id="money-input" v-model="transfer.amount" placeholder="0" min="0.01"
+    type="number"></b-form-input></span>
     <b-form-input placeholder="To" v-model="toUserName"></b-form-input>
+    <b-form-input placeholder="Note" v-model="transfer.note"></b-form-input>
     <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
     </div>
     
@@ -61,8 +63,18 @@
   </div> 
 
  
+  <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
+    <div>Search</div>
+   
+    <div><b-form-input placeholder="Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input></div>
   
+    <div v-for="userResult in userList" v-bind:key="userResult.id" class="usernameResult">
+    <span>{{userResult.username}}</span>
+    </div>
   </div>
+  </div>
+  
+
  
   
   
@@ -83,6 +95,8 @@ data() {
     account_from: 0,
     account_to: 0,
     amount: 0,
+    note: '',
+    
     
    },
    user: {
@@ -92,8 +106,12 @@ data() {
    },
    listOfTransfers : [],
    pendingTransfers: [],
-   
+   userList: [],
+   search: '',
+
     }
+
+    
 },
 updated() {
   if(this.$store.state.showStatements == true) {
@@ -102,6 +120,8 @@ updated() {
   if(this.$store.state.showPending == true) {
     this.getPending()
   }
+
+  
 },
 
 mounted() {
@@ -116,16 +136,29 @@ mounted() {
   })
   
 },
+watch: {
+  search: function() {
+   if(this.search != '') {
+    this.getUserNames()
+  }
+  if(this.search == '') {
+    this.userList = [];
+  }
+}
+},
 methods: {
+
     transferMoney() {
         TransferService.getUserId(this.toUserName).then((response) => {
             this.transfer.account_to = response.data;
             console.log(this.transfer)
             TransferService.send(this.transfer).then(() => {
             console.log("Money sent.");
+        this.$store.commit("SUBTRACT_FUNDS", this.transfer.amount);
         this.transfer.account_from = this.user.userId;
         this.transfer.account_to = 0;
         this.amount = 0;
+        this.transfer.note = '';
         })
         })
         
@@ -146,6 +179,11 @@ methods: {
      
     })
   },
+  getUserNames() {
+    TransferService.getUsernames(this.search).then((response => {
+      this.userList = response.data;
+    }))
+  },
   
     // getId() {
     //     console.log(this.toUserName)
@@ -163,6 +201,7 @@ methods: {
             this.transfer.account_from = this.user.userId;
             this.transfer.account_to = 0;
             this.amount = 0;
+            this.transfer.note = '';
         }) 
         
             
@@ -174,6 +213,11 @@ methods: {
 </script>
 
 <style>
+
+body {
+  font-family: "Athletics";
+}
+
 .past-transaction {
   border-bottom: 1px solid lightgrey;
   
@@ -244,4 +288,30 @@ input[type=number]::-webkit-outer-spin-button {
   width: 200px;
   font-weight: bold!important;
 }
+
+
+
+.usernameResult:hover {
+  background-color: rgba(0,140,255);
+  color: white;
+  cursor: pointer;
+}
+
+.theResults {
+
+}
+
+.userSearch {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5%;
+  margin-right: 10%;
+  margin-top: 25%;
+}
+
+.usernameResult {
+  width: 50%;
+}
+
+
 </style>

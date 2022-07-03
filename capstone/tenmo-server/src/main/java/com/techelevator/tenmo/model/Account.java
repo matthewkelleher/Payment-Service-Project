@@ -11,6 +11,8 @@ public class Account {
     @NotBlank
     private BigDecimal balance;
     private String username;
+    private String userImage;
+
 
     public String getUserId() {
         return userId;
@@ -44,10 +46,19 @@ public class Account {
         this.balance = balance;
     }
 
-    public Account(String userId, String accountId, BigDecimal balance) {
+    public Account(String userId, String accountId, BigDecimal balance, String userImage) {
         this.userId = userId;
         this.accountId = accountId;
         this.balance = balance;
+        this.userImage = userImage;
+    }
+
+    public String getImage() {
+        return userImage;
+    }
+
+    public void setImage(String image) {
+        this.userImage = image;
     }
 
     public Account() {

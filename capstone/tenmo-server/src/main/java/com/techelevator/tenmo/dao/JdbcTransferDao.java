@@ -20,7 +20,7 @@ public class JdbcTransferDao implements TransferDao {
 
     public List<Transfer> getTransferList(String username) {
         String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
-                "t.account_from, t.account_to, t.amount, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
+                "t.account_from, t.account_to, t.amount, t.note, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
                 "JOIN account a ON t.account_to = a.account_id " +
                 "JOIN account f ON t.account_from = f.account_id " +
                 "JOIN tenmo_user u ON a.user_id = u.user_id " +
@@ -51,6 +51,7 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransfer_type_desc(rs.getString("transfer_type_desc"));
         transfer.setTransfer_id(rs.getInt("transfer_id"));
         transfer.setUsernameTo(rs.getString("name_to"));
+        transfer.setNote(rs.getString("note"));
 
         return transfer;
     }
@@ -60,8 +61,8 @@ public class JdbcTransferDao implements TransferDao {
         String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
         int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
         int recipientId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_to());
-        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql3, 2, 2, senderId, recipientId, transfer.getAmount());
+        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount, note) VALUES(?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql3, 2, 2, senderId, recipientId, transfer.getAmount(), transfer.getNote());
 
 
         String sql = "UPDATE account" +
@@ -119,8 +120,8 @@ public class JdbcTransferDao implements TransferDao {
         String sql1 = "SELECT account_id FROM account WHERE user_id = ?";
         int senderId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_from());
         int recipientId = jdbcTemplate.queryForObject(sql1, Integer.class, transfer.getAccount_to());
-        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES(?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql3, 1, 1, senderId , recipientId, transfer.getAmount());
+        String sql3 = "INSERT into transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount, note) VALUES(?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql3, 1, 1, senderId , recipientId, transfer.getAmount(), transfer.getNote());
 
         return transfer;
 
@@ -128,7 +129,7 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     public List<Transfer> pendingTransfers(String username) {
-        String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
+        String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, t. note, y.transfer_status_desc, " +
                 "t.account_from, t.account_to, t.amount, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
                 "JOIN account a ON t.account_to = a.account_id " +
                 "JOIN account f ON t.account_from = f.account_id " +
