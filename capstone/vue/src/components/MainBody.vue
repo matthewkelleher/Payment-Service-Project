@@ -25,7 +25,7 @@
   v-bind:key="pastTransfer.id">
   <div class="past-grid-container">
     <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
-     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
+     {{pastTransfer.transfer_type_desc}} {{pastTransfer.transfer_status_desc}}<span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
    
     <div class="past-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
@@ -60,7 +60,8 @@
     </div>
     <div class="pending-note">{{pastTransfer.note}}</div>
     <div class="pending-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
-    <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending">Approve</b-button></div>
+    <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending" @click="approveTransaction(pastTransfer)">Approve</b-button></div>
+    <div class="reject-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="reject" @click="rejectTransaction(pastTransfer)">Reject</b-button></div>
   </div>
   </div> 
   
@@ -177,6 +178,16 @@ methods: {
 
     })
     
+  },
+  approveTransaction(approved) {
+    TransferService.approve(approved).then(() => {
+      this.$store.commit("SUBTRACT_FUNDS", approved.amount);
+    })
+  },
+  rejectTransaction(rejected) {
+    TransferService.reject(rejected).then(() => {
+      console.log("Done.")
+    })
   },
   imageFinder(id) {
     return id + ".jpg";
@@ -431,6 +442,14 @@ grid-column-start: 2;
   grid-row-start: 1;
   max-width: 100px;
 
+}
+
+.reject-button {
+  grid-column-start: 4;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 2;
+  max-width: 100px;
 }
 
 .pending {
