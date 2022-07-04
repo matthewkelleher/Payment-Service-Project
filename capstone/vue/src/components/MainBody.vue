@@ -24,14 +24,14 @@
       <div v-for="pastTransfer in listOfTransfers"
   v-bind:key="pastTransfer.id">
   <div class="past-grid-container">
-    <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
-     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
+    <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
+     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
    
     <div class="past-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
     <div class="past-note">{{pastTransfer.note}}</div>
-    <div class="past-image"><img src="2001.jpg" id="statement-image"/></div>
+    <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
    
   </div>
     </div>
@@ -59,7 +59,7 @@
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span>
     </div>
     <div class="pending-note">{{pastTransfer.note}}</div>
-    <div class="pending-image"><img src="2001.jpg" id="statement-image"/></div>
+    <div class="pending-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
     <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending">Approve</b-button></div>
   </div>
   </div> 
@@ -177,6 +177,9 @@ methods: {
 
     })
     
+  },
+  imageFinder(id) {
+    return id + ".jpg";
   },
   formatMoney(number) {
   return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
