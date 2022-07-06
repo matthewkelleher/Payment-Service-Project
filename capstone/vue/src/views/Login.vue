@@ -1,6 +1,6 @@
 <template>
   <div id="login-page">
-    <span id="headline"><h2>Sign in to Tenmo</h2> {{user}}</span>
+    <span id="headline"><h2>Sign in to Tenmo</h2></span>
     <b-form @submit.prevent="login" class="login-form">
       <b-form-group
         id="username-input"
@@ -26,13 +26,13 @@
         </b-form-input>
         </b-form-group>
         <div id="lastline">
-        <div>Forgot Password?</div>
+        <div><router-link :to="{ name: 'register' }">Need an account?</router-link></div>
         <b-button id="submit-button" type="submit">Sign In</b-button>
         </div>
       </b-form>
 
       <div>
-      <router-link :to="{ name: 'register' }">Need an account?</router-link>
+      
       </div>
    
   </div>

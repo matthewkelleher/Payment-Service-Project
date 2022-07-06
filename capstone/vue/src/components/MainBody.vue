@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="page">
  
 <div v-if="this.$store.state.payClicked == true" style="text-align: left">
 
@@ -239,6 +239,7 @@ methods: {
 body {
   font-family: "Athletics";
 }
+
 
 
 .past-transaction {

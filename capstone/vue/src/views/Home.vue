@@ -38,7 +38,7 @@ export default {
 
 @keyframes onLoadTranslateRight {
   0% {
-    transform: translateX(-4%) translateY(4%);
+    transform: translateX(-5%) translateY(5%);
   }
   100% {
     transform: translateX(0) translateY(0);
@@ -47,7 +47,7 @@ export default {
 
 @keyframes onLoadTranslateLeft {
   0% {
-    transform: translateX(4%) translateY(4%);
+    transform: translateX(5%) translateY(5%);
   }
 
   100% {
@@ -62,10 +62,14 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "home-left home-right";
   margin-left: 15%;
-  margin-right: 15%;
+  margin-right: 5%;
   margin-top: 15%;
   
 
+}
+
+.home-left {
+  margin-right: 15%;
 }
 #get-tenmo-button {
   width: 140px;
@@ -114,30 +118,26 @@ export default {
 }
 
 img {
-  max-height: 100%;
-  max-width: 100%
+  max-width: 100%;
 }
 
 #first-image {
- position: absolute;
- top: 100px;
- left: 775px;
+ position: relative;
+ top: -200px;
  z-index: 4;
  animation: 1s ease-out 0s 1 onLoadTranslateRight;
 }
 
 #second-image {
-  position: absolute;
-  top: 100px;
-  left: 775px;
+  position: relative;
+  top: -1525px;
   z-index: 0;
   animation: 1s ease-out 0s 1 onLoadTranslateLeft;
 }
 
 #third-image {
-  position: absolute;
-  top: 100px;
-  left: 775px;
+  position: relative;
+  top: -870px;
   z-index: 1;
   opacity: 0.7;
   animation: 1s ease-out 0s 1 onLoadTranslateRight;
