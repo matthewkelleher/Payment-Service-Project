@@ -1,20 +1,20 @@
 <template>
 <div class="page">
  
-<div v-if="this.$store.state.payClicked == true" style="text-align: left">
+<div v-if="this.$store.state.payClicked == true" class="payment-container">
 
-  <p style="font-weight: 500">TEnmo | Pay & Request</p>
+  <p style="font-weight: 500; text-align: center">TEnmo | Pay & Request</p>
     <div class="autocomplete">
     <b-form-input class="pay-request-input" id="money-input" 
     onkeydown="this.style.minWidth = (this.value.length + 3) + 'ch'" placeholder="0" v-model="transfer.amount" type="number"></b-form-input>
     <b-form-input class="pay-request-input" placeholder="To" v-model="toUserName"></b-form-input>
-    <b-form-input class="pay-request-input" placeholder="Note" v-model="transfer.note"></b-form-input>
+    <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" no-resize></b-form-textarea>
     <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
     </div>
-    
+    </div>    
 
 
-</div>
+
   <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length >= 1">
    <h3 id="completed-header">Completed Transactions</h3>
   
@@ -78,12 +78,11 @@
     <span>{{userResult.username}}</span>
     </div>
   </div>
-  </div>
-  
+ </div>
+ 
 
  
-  <!-- "
-   -->
+
 </template>
 
 <script>
@@ -96,6 +95,7 @@ data() {
         amount: null,
         toUserName: "",
         username: "",
+        
         
     transfer: {
     account_from: 0,
@@ -155,6 +155,7 @@ watch: {
 methods: {
 
     transferMoney() {
+        if(this.transfer.amount <= this.user.balance) {
         TransferService.getUserId(this.toUserName).then((response) => {
             this.transfer.account_to = response.data;
             console.log(this.transfer)
@@ -165,8 +166,13 @@ methods: {
         this.transfer.account_to = 0;
         this.amount = 0;
         this.transfer.note = '';
+        }) 
         })
-        })
+        } else if(this.transfer.amount <= 0) {
+          window.alert("Must transfer more than $0.")
+        } else {
+          window.alert("Trying to transfer more than you have.")
+        }
         
         
 
@@ -180,9 +186,13 @@ methods: {
     
   },
   approveTransaction(approved) {
+    if(approved.amount <= this.user.balance) {
     TransferService.approve(approved).then(() => {
       this.$store.commit("SUBTRACT_FUNDS", approved.amount);
     })
+  } else {
+    window.alert("You don't have enough money to approve this!")
+  }
   },
   rejectTransaction(rejected) {
     TransferService.reject(rejected).then(() => {
@@ -287,8 +297,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 #money-input {
   width: 64px!important;
+ 
   height: 100px;
-  font-size: 32px;
+  font-size: 36px;
 }
 
 /* .input-dollar {
@@ -306,15 +317,10 @@ input[type=number]::-webkit-outer-spin-button {
 } */
 
 .autocomplete {
- width:50%;
- height:500px;
- margin:0 auto;
+
+ text-align: center;
  
- position:absolute;
- left:50%;
- top:50%;
- margin-left:0px;
- margin-top:-250px;
+ 
 }
 
 .pay-request-buttons {
@@ -331,9 +337,6 @@ input[type=number]::-webkit-outer-spin-button {
   cursor: pointer;
 }
 
-.theResults {
-
-}
 
 .userSearch {
   display: flex;
@@ -349,7 +352,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 .pay-request-input {
   width: 400px!important;
-  
+  margin: 20px;
+  margin: 0 auto;
+  float: none
 }
 
 .grid-container {
@@ -384,8 +389,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .past-amount {
-grid-column-start: 3;
-  grid-column-end: 3;
+grid-column-start: 4;
+  grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 1;
  
@@ -393,7 +398,7 @@ grid-column-start: 3;
 
 .past-note {
 grid-column-start: 2;
-  grid-column-end: 2;
+  grid-column-end: 4;
   grid-row-start: 2;
   grid-row-end: 2;
   
@@ -473,6 +478,15 @@ grid-column-start: 2;
  top:50%;
  margin-left:-250px;
  margin-top:-250px;
+}
+
+
+
+.payment-container {
+  margin-top: 50px;
+  justify-content: center;
+  align-items: center;
+ 
 }
 
 </style>

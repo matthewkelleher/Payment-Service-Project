@@ -1,6 +1,7 @@
 <template>
   <div id="login-page">
-    <span id="headline"><h2>Sign in to Tenmo</h2></span>
+    <span id="headline"><h2 style="text-align:center">Sign in to Tenmo</h2></span>
+    <div v-if="this.invalidCredentials == true" class="alert alert-danger" style="text-align: center">Your username or password was incorrect.</div>
     <b-form @submit.prevent="login" class="login-form">
       <b-form-group
         id="username-input"
@@ -26,7 +27,7 @@
         </b-form-input>
         </b-form-group>
         <div id="lastline">
-        <div><router-link :to="{ name: 'register' }">Need an account?</router-link></div>
+        <div><router-link :to="{ name: 'register' }" style="text-decoration: none">Need an account?</router-link></div>
         <b-button id="submit-button" type="submit">Sign In</b-button>
         </div>
       </b-form>
@@ -61,6 +62,7 @@ export default {
           if (response.status == 200) {
             this.$store.commit("SET_AUTH_TOKEN", response.data.token);
             this.$store.commit("SET_USER", response.data.user);
+            this.$store.commit("SET_ALL_FALSE");
             this.$router.push("/mainpage");
           }
         })
@@ -80,6 +82,7 @@ export default {
 .login-form {
   height: 25%;
   width: 25%;
+  margin-top: 10%;
   margin-left: auto;
   margin-right: auto;  
   width: 33%;
@@ -132,6 +135,7 @@ h2 {
 #submit-button {
   font-family: serif;
   font-weight: bold;
+  background-color: rgba(0,140,255);
   
 }
 

@@ -20,7 +20,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @CrossOrigin
 @RestController
 public class AppController {

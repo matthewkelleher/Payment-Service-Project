@@ -44,6 +44,10 @@ export default new Vuex.Store({
     LOGOUT(state) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      state.payClicked = false;
+      state.UserSearch = false;
+      state.showPending = false;
+      state.showStatements = false;
       state.token = '';
       state.user = {};
       axios.defaults.headers.common = {};
@@ -64,6 +68,12 @@ export default new Vuex.Store({
       state.activeUser = user;
       
       
+    },
+    SET_ALL_FALSE(state) {
+      state.payClicked = false;
+      state.UserSearch = false;
+      state.showPending = false;
+      state.showStatements = false;
     },
     SUBTRACT_FUNDS(state, amount) {
       state.activeUser.balance -= amount;

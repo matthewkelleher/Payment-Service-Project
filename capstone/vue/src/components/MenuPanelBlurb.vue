@@ -4,7 +4,7 @@
         
         <!-- <img class="headshot" :src= "image"/>         -->
   </span>
-  <p id="welcome">Hi, {{this.username}} </p>
+  <p id="welcome">Hi, {{this.username}}</p>
   </div>
 </template>
 

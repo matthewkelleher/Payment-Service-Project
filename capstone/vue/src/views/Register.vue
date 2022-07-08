@@ -2,14 +2,12 @@
   <div id="register" class="text-center">
     <div>
       <b-container fluid>
-    <b-form @submit="register">
+    <b-form @submit.prevent="register" class="register-form">
       <h1 class="h3 mb-3 font-weight-normal">Create Account</h1>
-      <!-- <div class="alert alert-danger" role="alert" v-if="registrationErrors">
-        {{ registrationErrorMsg }}
-      </div>       -->
+      
      
       <b-form-group id="username-group"
-       label="Username:" label-for="username">
+      label-for="username">
       <b-form-input
       
         id="username"
@@ -20,7 +18,7 @@
       ></b-form-input>
       </b-form-group>
       <b-form-group
-       label="Password" label-for="password">
+      label-for="password">
       <b-form-input
        
         id="password"
@@ -32,7 +30,7 @@
       ></b-form-input>
       </b-form-group>
       <b-form-group
-       label="Confirm Password" label-for="confirm-password">
+       label-for="confirm-password">
       <b-form-input
        
         id="confirm-password"
@@ -49,6 +47,12 @@
       </b-button>
     </b-form>
       </b-container>
+      <div class="alert alert-danger" role="alert" v-if="registrationErrors">
+        {{ registrationErrorMsg }}
+      </div>     
+      <div class="alert alert-success" role="alert" v-if="registrationSuccess">
+        {{ registrationSuccessMsg }}
+      </div> 
     </div>
     <router-link :to="{ name: 'login' }">Have an account?</router-link>
    
@@ -70,6 +74,8 @@ export default {
         role: 'user',
       },
       registrationErrors: false,
+      registrationSuccess: false,
+      registrationSuccessMsg: 'Registration successful. Please log in.',
       registrationErrorMsg: 'There were problems registering this user.',
     };
   },
@@ -83,10 +89,13 @@ export default {
           .register(this.user)
           .then((response) => {
             if (response.status == 201) {
+              this.registrationSuccess = true;
+              setTimeout( () =>
               this.$router.push({
                 path: '/login',
                 query: { registration: 'success' },
-              });
+              }), 3000);
+              
             }
           })
           .catch((error) => {
@@ -106,4 +115,49 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.register-form {
+height: 25%;
+  width: 25%;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;  
+  width: 33%;
+  height: 25%;
+  background-color: rgb(243, 241, 241);
+  vertical-align: middle;
+  padding: 50px;
+  box-sizing: border-box;
+  outline: none;
+
+
+}
+
+#register {
+  background-color: white;
+}
+
+#username {
+
+background-color: rgb(243, 241, 241);
+border-top: none;
+border-right: none;
+border-left: none;
+
+}
+
+#password {
+background-color: rgb(243, 241, 241);
+border-top: none;
+border-right: none;
+border-left: none;
+}
+
+#confirm-password {
+background-color: rgb(243, 241, 241);
+border-top: none;
+border-right: none;
+border-left: none;
+}
+
+</style>

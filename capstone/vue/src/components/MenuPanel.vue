@@ -156,6 +156,7 @@ methods: {
 }
 
 #menubar {
-
+position: sticky;
+  top: 0;
 }
 </style>

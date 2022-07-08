@@ -43,6 +43,7 @@ data() {
   border-right: 1px solid lightgrey;
   margin-left: 10%;
   height: 100vh;
+  
 }
 
 .main-body {
