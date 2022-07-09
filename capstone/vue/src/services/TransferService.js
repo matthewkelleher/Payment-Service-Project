@@ -37,6 +37,10 @@ export default {
     },
     getUsernames(username) {
         return axios.get(`/usernames/${username}`)
+    },
+
+    setName(account) {
+        return axios.put('/setname', account)
     }
   
 

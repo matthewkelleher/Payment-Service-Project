@@ -28,7 +28,9 @@ export default new Vuex.Store({
     userName: null,
     userId: null,
     accountId: null,
-    balance: null,  
+    balance: null,
+    firstname: null,
+    lastname: null  
     },
   },
   mutations: {

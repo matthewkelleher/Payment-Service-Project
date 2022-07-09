@@ -1,5 +1,7 @@
 <template>
 <div class="page">
+
+
  
 <div v-if="this.$store.state.payClicked == true" class="payment-container">
 
@@ -90,11 +92,17 @@
 
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
     <h3>Search</h3>
-   
-    <div><b-form-input placeholder="Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input></div>
   
-    <div v-for="userResult in userList" v-bind:key="userResult.id" class="usernameResult">
-    <span>{{userResult.username}}</span>
+    <div>
+      <b-input-group size="m" class="mb-2">
+      <b-input-group-prepend is-text>
+        <b-icon icon="search"></b-icon>
+      </b-input-group-prepend><b-form-input placeholder="Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input>
+  </b-input-group>
+  </div>
+    <div v-for="userResult in userList" v-bind:key="userResult.account_id" class="usernameResult">
+    <span id="username-result">{{userResult.username}}</span>
+    <img id="statement-image" :src="imageFinder(userResult.account_id)" @error="imageUrlAlt">
     </div>
   </div>
  
@@ -127,7 +135,9 @@ data() {
    user: {
     userId: null,
     balance: null,
-    userName: null
+    userName: null,
+    firstname: null,
+    lastname: null
    },
    listOfTransfers : [],
    pendingTransfers: [],
@@ -152,11 +162,14 @@ updated() {
 mounted() {
     
     TransferService.balance().then((response) => {
+    console.log(response.data);
     this.user.userId = response.data.userId;
     this.transfer.account_from = response.data.userId;
     this.transfer.account_to = response.data.userId;
     this.user.balance = response.data.balance;
     this.user.userName = response.data.username;
+    this.user.firstname = response.data.firstName;
+    this.user.lastname = response.data.lastName;
    
   })
   
@@ -172,7 +185,7 @@ watch: {
 }
 },
 methods: {
-
+    
     transferMoney() {
         if(this.transfer.amount <= this.user.balance && this.transfer.amount > 0) {
         TransferService.getUserId(this.toUserName).then((response) => {
@@ -235,6 +248,7 @@ methods: {
       this.userList = response.data;
     }))
   },
+ 
   
     // getId() {
     //     console.log(this.toUserName)
@@ -336,6 +350,8 @@ h3 {
   background-color: rgba(0,140,255);
   color: white;
   cursor: pointer;
+  width: 100%;
+  border-radius: 10px;
 }
 
 

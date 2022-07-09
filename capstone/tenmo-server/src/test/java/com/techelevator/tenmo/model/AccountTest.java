@@ -13,7 +13,7 @@ public class AccountTest {
 
     @Before
     public void setup() {
-        this.testItem = new Account("testID testID", "accountID", new BigDecimal("500"), "whatever" );
+        this.testItem = new Account(5555, 5555, new BigDecimal("500"), "whatever", "whatever", "whatever" );
     }
 
     @Test

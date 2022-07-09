@@ -2,9 +2,10 @@
 <div id="blah">
     <span id="image-here" :style="{'background-image':'url(' + image + ')'}">
         
-        <!-- <img class="headshot" :src= "image"/>         -->
+       
   </span>
-  <p id="welcome">Hi, {{this.username}}</p>
+  <p id="welcome">Hi, {{this.firstname}}</p>
+ 
   </div>
 </template>
 
@@ -12,10 +13,11 @@
 export default {
 name: 'menu-panel-blurb',
 username: '',
+firstname: '',
 userId: 0,
 image: '',
 created() {
-    this.username = this.$store.state.user.username;
+    this.firstname = this.$store.state.activeUser.firstname + "";
     this.userId = this.$store.state.activeUser.accountId;
     this.image = this.userId + '.jpg';
 }

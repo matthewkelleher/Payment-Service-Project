@@ -6,7 +6,7 @@
       </div>
       <div id="second-para-container">
       <p id="second-para">Pay. Get paid. Shop or share—if those features are implemented. Join more than several fictional people who use the Tenmo app.</p>
-<router-link v-bind:to="{ name: 'mainpage' }"><b-button v-on:click="payClicked()" id="get-tenmo-button" pill variant="primary">Get Tenmo</b-button></router-link>
+<router-link v-bind:to="{ name: 'postlogin' }"><b-button v-on:click="payClicked()" id="get-tenmo-button" pill variant="primary">Get Tenmo</b-button></router-link>
 </div>
     </div>
     <div class="home-right">

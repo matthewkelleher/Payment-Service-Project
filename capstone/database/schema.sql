@@ -37,6 +37,8 @@ CREATE SEQUENCE seq_account_id
 CREATE TABLE account (
 	account_id int NOT NULL DEFAULT nextval('seq_account_id'),
 	user_id int NOT NULL,
+	firstname varchar(30),
+	lastname varchar(40),
 	balance decimal(13, 2) NOT NULL,
 	userImage varchar(200),
 	CONSTRAINT PK_account PRIMARY KEY (account_id),

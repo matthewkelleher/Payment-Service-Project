@@ -5,21 +5,46 @@ import java.math.BigDecimal;
 
 public class Account {
     @NotBlank
-    private String userId;
+    private long userId;
     @NotBlank
-    private String accountId;
+    private long accountId;
     @NotBlank
     private BigDecimal balance;
     @NotBlank
     private String username;
     private String userImage;
+    private String firstName;
+    private String lastName;
 
+    public String getUserImage() {
+        return userImage;
+    }
 
-    public String getUserId() {
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstname) {
+        this.firstName = firstname;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
+    }
+
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
@@ -31,11 +56,11 @@ public class Account {
         this.username = username;
     }
 
-    public String getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
 
@@ -47,11 +72,13 @@ public class Account {
         this.balance = balance;
     }
 
-    public Account(String userId, String accountId, BigDecimal balance, String userImage) {
+    public Account(long userId, long accountId, BigDecimal balance, String firstname, String lastname, String userImage) {
         this.userId = userId;
         this.accountId = accountId;
         this.balance = balance;
         this.userImage = userImage;
+        this.lastName = lastname;
+        this.firstName = firstname;
     }
 
     public String getImage() {

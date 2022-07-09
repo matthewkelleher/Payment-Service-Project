@@ -1,7 +1,8 @@
 <template>
   
+
   <div id="menubar" :key="checkIt">
-    
+  
     <router-link @click="allFalse()" style="text-decoration: none" v-bind:to="{ name: 'home' }"><p id="tenmo-logo">tenmo</p></router-link>
     <MenuPanelBlurb/>
     <b-button pill size="lg" id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">
@@ -31,9 +32,7 @@ name: "menu-panel",
 components: {
   MenuPanelBlurb
 },
-props: {
 
-},
 data() {
   return {
    user: {
@@ -41,6 +40,8 @@ data() {
     userId: null,
     accountId: null,
     balance: null,   
+    firstname: null,
+    lastname: null
    },
   checkIt: 0
   }
@@ -51,6 +52,8 @@ created() {
     this.user.accountId = response.data.accountId;
     this.user.balance = response.data.balance;
     this.user.userName = response.data.username;
+    this.user.firstname = response.data.firstName;
+    this.user.lastname = response.data.lastName;
     
   })
  

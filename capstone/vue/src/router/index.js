@@ -6,6 +6,7 @@ import Logout from '../views/Logout.vue'
 import Register from '../views/Register.vue'
 import store from '../store/index'
 import MainPage from '../views/MainPage.vue'
+import PostLogin from '../views/PostLogin.vue'
 
 Vue.use(Router)
 
@@ -58,6 +59,14 @@ const router = new Router({
       path: "/mainpage",
       name: "mainpage",
       component: MainPage,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/postlogin",
+      name: "postlogin",
+      component: PostLogin,
       meta: {
         requiresAuth: true
       }

@@ -48,7 +48,7 @@ public class AppController {
 
     @RequestMapping(path = "/account/balance")
     public Account getAnAccount(Principal principal) {
-
+        System.out.println("Attempting to get account.");
         return accountDao.getAccount(principal.getName());
     }
 
@@ -115,6 +115,12 @@ public class AppController {
     public List<User> listOfUsers(@PathVariable String username) {
 //        int userId = userDao.findIdByUsername(principal.getName());
         return userDao.getUserNames(username);
+    }
+
+    @RequestMapping(path = "/setname", method = RequestMethod.PUT)
+    public Account setName(@RequestBody Account account) {
+     
+        return accountDao.setName(account);
     }
 
 }

@@ -88,7 +88,7 @@ public class JdbcUserDao implements UserDao {
         user.setPassword(rs.getString("password_hash"));
         user.setActivated(true);
         user.setAuthorities("USER");
-//        user.setBalance(rs.getBigDecimal("balance"));
+
         return user;
     }
 
@@ -98,18 +98,27 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
-    public List<User> getUserNames(String searchName) {
+    public List<User> getUserNames(String searchname) {
         System.out.println("Getting usernames.");
-        String sql = "SELECT username FROM tenmo_user WHERE username ILIKE ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, searchName + "%");
+        String sql = "SELECT user_id, username FROM tenmo_user WHERE username ILIKE ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, searchname + "%");
         List<User> userlist = new ArrayList<>();
         while (results.next()) {
-            User user = mapRowToUserName(results);
+            User user = mapRowToUserShort(results);
             userlist.add(user);
 
         }
         return userlist;
 
 
+    }
+
+    private User mapRowToUserShort(SqlRowSet rs) {
+        User user = new User();
+        user.setId(rs.getLong("user_id"));
+        user.setUsername(rs.getString("username"));
+        user.setAccount_id(user.getId() + 1000);
+
+        return user;
     }
 }

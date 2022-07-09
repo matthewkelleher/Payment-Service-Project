@@ -20,18 +20,6 @@ public class JdbcAccountDao implements AccountDao {
     private JdbcTemplate jdbcTemplate;
     public JdbcAccountDao(DataSource ds) { this.jdbcTemplate = new JdbcTemplate(ds);}
 
-//    public BigDecimal getBalance(String username) {
-//        String sql = "SELECT balance FROM account WHERE account_id" +
-//                " = (SELECT account_id FROM tenmo_user WHERE username ILIKE ?)";
-//        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
-//        BigDecimal balance = new BigDecimal(0);
-//        if (results.next()){
-//            balance = results.getBigDecimal("balance");
-//
-//        }
-//
-//        return balance;
-//    }
 
     public Account getAccount(String username) {
         String sql = "SELECT * FROM account WHERE user_id =" +
@@ -46,7 +34,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     public Account getImage(String username) {
-        String sql = "SELECT image FROM account WHERE user_id =" +
+        String sql = "SELECT userimage FROM account WHERE user_id =" +
                 "(SELECT user_id FROM tenmo_user WHERE username ILIKE ?)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
         Account account = new Account();
@@ -57,6 +45,19 @@ public class JdbcAccountDao implements AccountDao {
         return account;
     }
 
+    public Account setName(Account account) {
+        String sql = "UPDATE account" +
+                " SET firstname = ?" +
+                " WHERE user_id = ?";
+        jdbcTemplate.update(sql, account.getFirstName(), account.getUserId());
+
+        String sql2 = "UPDATE account" +
+                " SET lastname = ?" +
+                " WHERE user_id = ?";
+        jdbcTemplate.update(sql2, account.getLastName(), account.getUserId());
+
+        return account;
+    }
 
 
 
@@ -65,10 +66,12 @@ public class JdbcAccountDao implements AccountDao {
     private Account mapRowToAccounts(SqlRowSet rs) {
 
         Account account = new Account();
-        account.setAccountId(rs.getString("account_id"));
-        account.setUserId(rs.getString("user_id"));
+        account.setAccountId(rs.getLong("account_id"));
+        account.setUserId(rs.getLong("user_id"));
+        account.setFirstName(rs.getString("firstname"));
+        account.setLastName(rs.getString("lastname"));
         account.setBalance(rs.getBigDecimal("balance"));
-        account.setImage(rs.getString("userImage"));
+        account.setImage(rs.getString("userimage"));
 
         return account;
     }
