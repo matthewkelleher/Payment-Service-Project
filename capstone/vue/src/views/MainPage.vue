@@ -30,7 +30,7 @@ data() {
 
 <style>
 .home {
-  height: 100%;
+  height: 100vh;
   display: grid;
   grid-template-columns: 1fr 3fr;
   grid-template-areas:
@@ -40,14 +40,15 @@ data() {
 }
 .left-panel {
   
-  border-right: 1px solid lightgrey;
+  
   margin-left: 10%;
   height: 100vh;
   
 }
 
 .main-body {
- 
+ border-left: 1px solid lightgrey;
+ height: 100vh;
   
 }
 </style>

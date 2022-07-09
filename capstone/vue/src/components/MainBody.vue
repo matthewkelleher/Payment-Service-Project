@@ -6,8 +6,8 @@
   <p style="font-weight: 500; text-align: center">TEnmo | Pay & Request</p>
     <div class="autocomplete">
     <b-form-input class="pay-request-input" id="money-input" 
-    onkeydown="this.style.minWidth = (this.value.length + 3) + 'ch'" placeholder="0" v-model="transfer.amount" type="number"></b-form-input>
-    <b-form-input class="pay-request-input" placeholder="To" v-model="toUserName"></b-form-input>
+    onkeydown="this.style.minWidth = (this.value.length + 3) + 'ch'" placeholder="0" v-model="transfer.amount" type="number" required></b-form-input>
+    <b-form-input class="pay-request-input" placeholder="To" v-model="toUserName" required></b-form-input>
     <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" no-resize></b-form-textarea>
     <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
     </div>
@@ -17,25 +17,40 @@
 
   <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length >= 1">
    <h3 id="completed-header">Completed Transactions</h3>
-  
+   
    
    
     <div class="transaction-container">
       <div v-for="pastTransfer in listOfTransfers"
   v-bind:key="pastTransfer.id">
-  <div class="past-grid-container">
+  
+    <div v-if="pastTransfer.transfer_status_desc == 'Rejected'">
+    <div class="past-grid-container">
     <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
-     {{pastTransfer.transfer_type_desc}} {{pastTransfer.transfer_status_desc}}<span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
-   
-    <div class="past-amount">
+     rejected a request from <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
+     <div class="past-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
     <div class="past-note">{{pastTransfer.note}}</div>
     <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
+    </div>
+    </div>
+     
+   <div v-else-if="pastTransfer.transfer_status_desc == 'Approved'">
+   <div class="past-grid-container">
+   <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
+     paid <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
+     <div class="past-amount">
+      <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
+      <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
+    <div class="past-note">{{pastTransfer.note}}</div>
+    <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
+    </div>
+    
    
-  </div>
     </div>
   </div>
+  </div>
     
     
   
@@ -43,16 +58,19 @@
   
   
   </div>
-  <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length ==0">Nothing here yet.</div>
+  <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length == 0">
+  <h3 id="completed-header">Completed Transactions</h3>
+   <p>Sorry, no transactions to display.</p>
+  </div>
   <div class="pending-statements" v-if="this.$store.state.showPending == true && this.pendingTransfers.length >= 1">
   
-<h3 id="pending-header">Pending Transactions</h3>
+<h3 id="pending-header">Incomplete</h3>
   
       <div v-for="pastTransfer in pendingTransfers"
   v-bind:key="pastTransfer.id">
   <div class="grid-container">
-    <div class="pending-statement"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
-     {{pastTransfer.transfer_type_desc}} <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
+    <div class="pending-statement-container"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
+     requested payment from <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
    
     <div class="pending-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
@@ -67,10 +85,11 @@
   
 </div>
 
-<div v-if="this.$store.state.showPending == true && this.pendingTransfers.length == 0">Nothing to see here homie.</div>
+<div v-if="this.$store.state.showPending == true && this.pendingTransfers.length == 0" class="pending-statements">
+<h3 id="pending-header">Incomplete</h3></div>
 
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
-    <div>Search</div>
+    <h3>Search</h3>
    
     <div><b-form-input placeholder="Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input></div>
   
@@ -78,11 +97,11 @@
     <span>{{userResult.username}}</span>
     </div>
   </div>
- </div>
+ 
  
 
  
-
+</div>
 </template>
 
 <script>
@@ -155,7 +174,7 @@ watch: {
 methods: {
 
     transferMoney() {
-        if(this.transfer.amount <= this.user.balance) {
+        if(this.transfer.amount <= this.user.balance && this.transfer.amount > 0) {
         TransferService.getUserId(this.toUserName).then((response) => {
             this.transfer.account_to = response.data;
             console.log(this.transfer)
@@ -252,15 +271,7 @@ body {
 
 
 
-.past-transaction {
-  display: grid;
-  grid-template-columns: 4;
-  grid-template-rows: 2;
-  grid-template-areas:
-  "a b b c"
-  "a d d d";
-  border-bottom: 1px solid lightgrey;
-}
+
 
 .inner-transaction {
   /* padding-top: 10px;
@@ -280,8 +291,8 @@ body {
 }
 
 #statement-image {
-  height: 100x;
-  width: 100px;
+  height: 75px;
+  width: 75px;
   border-radius: 50%;
 }
 
@@ -302,19 +313,9 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 36px;
 }
 
-/* .input-dollar {
-    position: relative;
-    
+h3 {
+  font-family: "Athletics"
 }
-.input-dollar input {
-    padding-left:18px;
-} */
-/* .input-dollar:before {
-    position: absolute;
-    top: 5;
-    content:"$";
-    left: 5px;
-} */
 
 .autocomplete {
 
@@ -341,9 +342,15 @@ input[type=number]::-webkit-outer-spin-button {
 .userSearch {
   display: flex;
   flex-direction: column;
-  margin-left: 5%;
-  margin-right: 10%;
-  margin-top: 25%;
+  width:50%;
+ height:500px;
+ margin:0 auto;
+ 
+ position:absolute;
+ left:50%;
+ top:50%;
+ margin-left:-250px;
+ margin-top:-250px;
 }
 
 .usernameResult {
@@ -360,9 +367,10 @@ input[type=number]::-webkit-outer-spin-button {
 .grid-container {
   display: grid;
   border-bottom: 1px solid lightgrey;
-  grid-template-columns: repeat(4, 1fr);
-  padding-top: 5%;
-  padding-bottom: 5%;
+  grid-template-columns: repeat(5, 1fr);
+  
+  padding-top: 1%;
+  padding-bottom: 1%;
   padding-left: 5%;
  
 }
@@ -371,9 +379,10 @@ input[type=number]::-webkit-outer-spin-button {
   display: grid;
   border-bottom: 1px solid lightgrey;
   grid-template-columns: repeat(3, 1fr);
-  padding-top: 5%;
-  padding-bottom: 5%;
+  padding-top: 1%;
+  padding-bottom: 1%;
   padding-left: 5%;
+  
 }
 
 .past-image-container {
@@ -389,8 +398,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .past-amount {
-grid-column-start: 4;
-  grid-column-end: 4;
+grid-column-start: 3;
+  grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 1;
  
@@ -398,7 +407,7 @@ grid-column-start: 4;
 
 .past-note {
 grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-end: 3;
   grid-row-start: 2;
   grid-row-end: 2;
   
@@ -406,7 +415,7 @@ grid-column-start: 2;
 
 .past-image {
   grid-column-start: 1;
-  grid-column-end: 2;
+  grid-column-end: 1;
   
 }
 .pending-image {
@@ -416,9 +425,9 @@ grid-column-start: 2;
   max-width: 100px;
 }
 
-.pending-statement {
+.pending-statement-container {
   grid-column-start: 2;
-  grid-column-end: 2;
+  grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 1;
   max-width: 200px;
@@ -426,8 +435,8 @@ grid-column-start: 2;
 }
 
 .pending-amount {
-  grid-column-start: 3;
-  grid-column-end: 3;
+  grid-column-start: 4;
+  grid-column-end: 4;
   grid-row-start: 1;
   grid-row-end: 1;
   max-width: 100px;
@@ -435,27 +444,29 @@ grid-column-start: 2;
 
 .pending-note {
   grid-column-start: 2;
-  grid-column-end: 2;
+  grid-column-end: 4;
   grid-row-start: 2;
   grid-row-end: 2;
   max-width: 300px;
 }
 
 .pending-button {
-  grid-column-start: 4;
-  grid-column-end: 4;
+  grid-column-start: 5;
+  grid-column-end: 5;
   grid-row-start: 1;
   grid-row-start: 1;
   max-width: 100px;
+  margin: 0;
 
 }
 
 .reject-button {
-  grid-column-start: 4;
-  grid-column-end: 4;
+  grid-column-start: 5;
+  grid-column-end: 5;
   grid-row-start: 2;
   grid-row-end: 2;
   max-width: 100px;
+ 
 }
 
 .pending {
