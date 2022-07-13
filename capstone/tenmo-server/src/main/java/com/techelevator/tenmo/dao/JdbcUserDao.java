@@ -34,6 +34,15 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
+    public int findAccountIdByUserId(String username) {
+        String sql = "SELECT account_id FROM account WHERE username_id = ?;";
+        Integer id = jdbcTemplate.queryForObject(sql, Integer.class, username);
+        if (id != null) {
+            return id;
+        } else {
+            return -1;
+        }
+    }
 
     @Override
     public List<User> findAll() {

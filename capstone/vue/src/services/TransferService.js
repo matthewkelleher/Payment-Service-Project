@@ -41,6 +41,9 @@ export default {
 
     setName(account) {
         return axios.put('/setname', account)
+    },
+    getName(id) {
+        return axios.get(`/profile/${id}`)
     }
   
 

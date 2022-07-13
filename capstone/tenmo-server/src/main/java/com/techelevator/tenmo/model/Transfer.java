@@ -19,6 +19,24 @@ public class Transfer {
     private String transfer_status_desc;
     private String usernameTo;
     private String note;
+    private String nameFrom;
+    private String nameTo;
+
+    public String getNameFrom() {
+        return nameFrom;
+    }
+
+    public void setNameFrom(String nameFrom) {
+        this.nameFrom = nameFrom;
+    }
+
+    public String getNameTo() {
+        return nameTo;
+    }
+
+    public void setNameTo(String nameTo) {
+        this.nameTo = nameTo;
+    }
 
     public String getUsernameTo() {
         return usernameTo;

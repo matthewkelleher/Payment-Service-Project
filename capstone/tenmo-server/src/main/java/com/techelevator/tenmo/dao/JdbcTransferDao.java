@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.ProfileDTO;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,12 +16,14 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
 
     private JdbcTemplate jdbcTemplate;
+    private ProfileDTO profileDTO = new ProfileDTO();
     public JdbcTransferDao(DataSource ds) { this.jdbcTemplate = new JdbcTemplate(ds);}
 
 
     public List<Transfer> getTransferList(String username) {
         String sql = "SELECT t.transfer_id, t.transfer_type_id, x.transfer_type_desc, t.transfer_status_id, y.transfer_status_desc, " +
-                "t.account_from, t.account_to, t.amount, t.note, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from FROM transfer t " +
+                "t.account_from, t.account_to, t.amount, t.note, u.user_id, u.username AS name_to, b.user_id, b.username AS name_from " +
+                "FROM transfer t " +
                 "JOIN account a ON t.account_to = a.account_id " +
                 "JOIN account f ON t.account_from = f.account_id " +
                 "JOIN tenmo_user u ON a.user_id = u.user_id " +
@@ -52,6 +55,8 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransfer_id(rs.getInt("transfer_id"));
         transfer.setUsernameTo(rs.getString("name_to"));
         transfer.setNote(rs.getString("note"));
+        transfer.setNameFrom(getName(transfer.getAccount_from()));
+        transfer.setNameTo(getName(transfer.getAccount_to()));
 
         return transfer;
     }
@@ -148,4 +153,27 @@ public class JdbcTransferDao implements TransferDao {
         return transfer;
 
     }
+
+    public String getName(long accountid) {
+        ProfileDTO profileDTO = new ProfileDTO();
+        String sql = "SELECT firstname, lastname FROM account " +
+                "WHERE account_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountid);
+        if(results.next()) {
+            profileDTO = mapRowToProfileDTO(results);
+        }
+
+        return profileDTO.getFirstName() + " " + profileDTO.getLastName();
+    }
+
+    private ProfileDTO mapRowToProfileDTO(SqlRowSet rs) {
+        ProfileDTO profileDTO = new ProfileDTO();
+        profileDTO.setFirstName(rs.getString("firstname"));
+        profileDTO.setLastName(rs.getString("lastname"));
+
+
+        return profileDTO;
+
+    }
+
 }

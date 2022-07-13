@@ -23,13 +23,14 @@
    
    
     <div class="transaction-container">
+{{listOfTransfers}}
       <div v-for="pastTransfer in listOfTransfers"
   v-bind:key="pastTransfer.id">
   
     <div v-if="pastTransfer.transfer_status_desc == 'Rejected'">
     <div class="past-grid-container">
-    <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
-     rejected a request from <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
+    <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.nameFrom}}</span>
+     rejected a request from <span style="font-weight: bold">{{pastTransfer.nameTo}}</span></div>
      <div class="past-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
@@ -40,8 +41,8 @@
      
    <div v-else-if="pastTransfer.transfer_status_desc == 'Approved'">
    <div class="past-grid-container">
-   <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span>
-     paid <span style="font-weight: bold">{{pastTransfer.usernameTo}}</span></div>
+   <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.nameFrom}}</span>
+     paid <span style="font-weight: bold">{{pastTransfer.nameTo}}</span></div>
      <div class="past-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
@@ -71,8 +72,8 @@
       <div v-for="pastTransfer in pendingTransfers"
   v-bind:key="pastTransfer.id">
   <div class="grid-container">
-    <div class="pending-statement-container"><span style="font-weight: bold">{{pastTransfer.usernameTo}}</span>
-     requested payment from <span style="font-weight: bold">{{pastTransfer.usernameFrom}}</span></div>
+    <div class="pending-statement-container"><span style="font-weight: bold">{{pastTransfer.nameTo}}</span>
+     requested payment from <span style="font-weight: bold">{{pastTransfer.nameFrom}}</span></div>
    
     <div class="pending-amount">
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
@@ -216,6 +217,10 @@ methods: {
 
     })
     
+  },
+  getTheName(id) {
+    TransferService.getName(id).then((response) => {
+    return response});
   },
   approveTransaction(approved) {
     if(approved.amount <= this.user.balance) {

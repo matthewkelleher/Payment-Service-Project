@@ -4,6 +4,7 @@ import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.ProfileDTO;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import io.swagger.annotations.ApiOperation;
@@ -119,8 +120,10 @@ public class AppController {
 
     @RequestMapping(path = "/setname", method = RequestMethod.PUT)
     public Account setName(@RequestBody Account account) {
-     
+
         return accountDao.setName(account);
     }
+
+
 
 }

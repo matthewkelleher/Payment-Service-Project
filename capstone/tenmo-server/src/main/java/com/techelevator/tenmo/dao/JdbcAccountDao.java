@@ -1,8 +1,8 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.Transfer;
-import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
+import com.techelevator.tenmo.model.ProfileDTO;
+
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -63,6 +63,8 @@ public class JdbcAccountDao implements AccountDao {
 
 
 
+
+
     private Account mapRowToAccounts(SqlRowSet rs) {
 
         Account account = new Account();
@@ -75,6 +77,8 @@ public class JdbcAccountDao implements AccountDao {
 
         return account;
     }
+
+
 
 
 }
