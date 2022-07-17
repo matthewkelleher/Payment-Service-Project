@@ -23,7 +23,7 @@
    
    
     <div class="transaction-container">
-{{listOfTransfers}}
+
       <div v-for="pastTransfer in listOfTransfers"
   v-bind:key="pastTransfer.id">
   
@@ -32,8 +32,9 @@
     <div class="past-statement"><span style="font-weight: bold">{{pastTransfer.nameFrom}}</span>
      rejected a request from <span style="font-weight: bold">{{pastTransfer.nameTo}}</span></div>
      <div class="past-amount">
-      <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
-      <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
+      <span v-if="pastTransfer.usernameTo == user.userName" style="color: green; text-decoration: line-through">{{formatMoney(pastTransfer.amount)}}</span>
+     
+      <span v-else style="color: red; text-decoration: line-through">-{{formatMoney(pastTransfer.amount)}}</span></div>
     <div class="past-note">{{pastTransfer.note}}</div>
     <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
     </div>
@@ -82,7 +83,7 @@
     <div class="pending-note">{{pastTransfer.note}}</div>
     <div class="pending-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
     <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending" @click="approveTransaction(pastTransfer)">Approve</b-button></div>
-    <div class="reject-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="reject" @click="rejectTransaction(pastTransfer)">Reject</b-button></div>
+    <div class="reject-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill variant="danger" class="reject" @click="rejectTransaction(pastTransfer)">Reject</b-button></div>
   </div>
   </div> 
   
@@ -93,18 +94,21 @@
 
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
     <h3>Search</h3>
-  
+ 
     <div>
       <b-input-group size="m" class="mb-2">
       <b-input-group-prepend is-text>
         <b-icon icon="search"></b-icon>
-      </b-input-group-prepend><b-form-input placeholder="Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input>
+      </b-input-group-prepend><b-form-input placeholder="Name or Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input>
   </b-input-group>
   </div>
-    <div v-for="userResult in userList" v-bind:key="userResult.account_id" class="usernameResult">
-    <span id="username-result">{{userResult.username}}</span>
-    <img id="statement-image" :src="imageFinder(userResult.account_id)" @error="imageUrlAlt">
+  
+    <div v-for="userResult in userList" v-bind:key="userResult.account_id" class="usernameResult" @click="pushToTransfer(userResult.username)">
+    <span id="username-search-result">{{userResult.username}}</span>
+    <span id="firstname-lastname-search-result">{{userResult.firstName}}&nbsp;{{userResult.lastName}}</span>
+    <span id="userimage-search-result"><img id="statement-image" :src="imageFinder(userResult.account_id)"></span>
     </div>
+  
   </div>
  
  
@@ -120,7 +124,7 @@ import TransferService from '../services/TransferService'
    
 data() {
     return {
-        amount: null,
+        amount: 0,
         toUserName: "",
         username: "",
         
@@ -188,6 +192,12 @@ watch: {
 methods: {
     
     transferMoney() {
+      if(this.transfer.account_to == this.transfer.account_from) {
+        this.transfer.account_to = 0;
+        this.toUserName = '';
+        window.alert("You cannot transfer to your own account.")
+        
+      }
         if(this.transfer.amount <= this.user.balance && this.transfer.amount > 0) {
         TransferService.getUserId(this.toUserName).then((response) => {
             this.transfer.account_to = response.data;
@@ -217,6 +227,13 @@ methods: {
 
     })
     
+  },
+
+  pushToTransfer(input) {
+    this.toUserName = input;
+    this.$store.state.showUserSearch = false;
+    this.$store.state.payClicked = true;
+
   },
   getTheName(id) {
     TransferService.getName(id).then((response) => {
@@ -254,16 +271,14 @@ methods: {
     }))
   },
  
-  
-    // getId() {
-    //     console.log(this.toUserName)
-    //     TransferService.getUserId(this.toUserName).then((response) => {
-    //         console.log(response.data);
-    //         this.toUserName = "";
-    //     })
-    // },
+ 
     requestMoney() {
        this.transfer.account_to = this.user.userId
+       if(this.transfer.account_to == this.transfer.account_from) {
+        this.transfer.account_to = 0;
+        this.toUserName = '';
+        window.alert("You cannot request money from yourself.")
+       }
        TransferService.getUserId(this.toUserName).then((response) => {
             this.transfer.account_from = response.data;
             TransferService.request(this.transfer).then(() => {
@@ -292,10 +307,7 @@ body {
 
 
 
-.inner-transaction {
-  /* padding-top: 10px;
-  padding-bottom: 10px; */
-}
+
 
 .statements {
  width:50%;
@@ -354,12 +366,39 @@ h3 {
 .usernameResult:hover {
   background-color: rgba(0,140,255);
   color: white;
-  cursor: pointer;
-  width: 100%;
+  cursor: pointer;  
   border-radius: 10px;
 }
 
+.usernameResult {
+  display: grid;
+  grid-template-columns: repeat(3, 100px); 
+  grid-template-rows: 50px;
+  max-height: 75px;
+  padding-left: 10%;
+}
+#username-search-result {
+grid-column-start: 2;
+grid-column-end: 2;
+grid-row-start: 2;
+grid-row-end: 2;
+}
 
+#firstname-lastname-search-result {
+grid-column-start: 2;
+grid-column-end: 2;
+grid-row-start: 1;
+grid-row-end: 1
+}
+
+#userimage-search-result {
+grid-column-start: 1;
+grid-column-end: 1;
+grid-row-start: 1;
+grid-row-end: 2;
+
+
+}
 .userSearch {
   display: flex;
   flex-direction: column;
@@ -374,10 +413,6 @@ h3 {
  margin-top:-250px;
 }
 
-.usernameResult {
-  width: 50%;
-}
-
 .pay-request-input {
   width: 400px!important;
   margin: 20px;
@@ -388,7 +423,7 @@ h3 {
 .grid-container {
   display: grid;
   border-bottom: 1px solid lightgrey;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   
   padding-top: 1%;
   padding-bottom: 1%;
@@ -399,28 +434,24 @@ h3 {
 .past-grid-container {
   display: grid;
   border-bottom: 1px solid lightgrey;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   padding-top: 1%;
   padding-bottom: 1%;
   padding-left: 5%;
   
 }
 
-.past-image-container {
-
-}
-
 .past-statement {
  grid-column-start: 2;
-  grid-column-end: 2;
+  grid-column-end: 6;
   grid-row-start: 1;
   grid-row-end: 1;
   
 }
 
 .past-amount {
-grid-column-start: 3;
-  grid-column-end: 3;
+grid-column-start: 5;
+  grid-column-end: 5;
   grid-row-start: 1;
   grid-row-end: 1;
  
@@ -448,16 +479,16 @@ grid-column-start: 2;
 
 .pending-statement-container {
   grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-end: 6;
   grid-row-start: 1;
   grid-row-end: 1;
-  max-width: 200px;
+  max-width: 500px;
 
 }
 
 .pending-amount {
-  grid-column-start: 4;
-  grid-column-end: 4;
+  grid-column-start: 6;
+  grid-column-end: 6;
   grid-row-start: 1;
   grid-row-end: 1;
   max-width: 100px;
@@ -465,15 +496,15 @@ grid-column-start: 2;
 
 .pending-note {
   grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-end: 5;
   grid-row-start: 2;
   grid-row-end: 2;
-  max-width: 300px;
+  max-width: 500px;
 }
 
 .pending-button {
-  grid-column-start: 5;
-  grid-column-end: 5;
+  grid-column-start: 7;
+  grid-column-end: 7;
   grid-row-start: 1;
   grid-row-start: 1;
   max-width: 100px;
@@ -482,11 +513,12 @@ grid-column-start: 2;
 }
 
 .reject-button {
-  grid-column-start: 5;
-  grid-column-end: 5;
+  grid-column-start: 7;
+  grid-column-end: 7;
   grid-row-start: 2;
   grid-row-end: 2;
   max-width: 100px;
+  
  
 }
 

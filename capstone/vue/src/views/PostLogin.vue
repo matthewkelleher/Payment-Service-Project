@@ -1,5 +1,8 @@
 <template>
-  <div v-if="user.firstname == null">
+
+  <div>
+
+  <div v-if="this.$store.state.activeUser.hasProfile != true">
 Please complete your profile
 
 {{enterUser}}
@@ -9,9 +12,13 @@ Please complete your profile
 
 </div>
 
-<div v-else>
+<div v-if="user.firstname != null">
     {{pushIt()}}
 </div>
+
+
+</div>
+
 </template>
 
 <script>
@@ -65,6 +72,10 @@ setName() {
     },
 pushIt() {
     this.$router.push("/mainpage")
+},
+restartIt() {
+  this.$store.commit("LOGOUT");
+    this.$router.push("/");
 }
 }
 }

@@ -115,7 +115,7 @@ public class AppController {
     @RequestMapping(path = "/usernames/{username}", method = RequestMethod.GET)
     public List<User> listOfUsers(@PathVariable String username) {
 //        int userId = userDao.findIdByUsername(principal.getName());
-        return userDao.getUserNames(username);
+        return userDao.getUserNamesAlternate(username);
     }
 
     @RequestMapping(path = "/setname", method = RequestMethod.PUT)

@@ -5,13 +5,14 @@
        
   </span>
   <p id="welcome">Hi, {{this.firstname}}</p>
- 
+  
   </div>
 </template>
 
 <script>
 export default {
 name: 'menu-panel-blurb',
+props: ['user'],
 username: '',
 firstname: '',
 userId: 0,
@@ -20,6 +21,7 @@ created() {
     this.firstname = this.$store.state.activeUser.firstname + "";
     this.userId = this.$store.state.activeUser.accountId;
     this.image = this.userId + '.jpg';
+   
 }
 }
 </script>

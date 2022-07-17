@@ -12,9 +12,9 @@
     <br>
     <p>{{formatMoney(this.user.balance)}} in Tenmo</p>
     <br>
-    <p class="menuitem" v-on:click="showUserSearch()">Search</p>
-    <p class="menuitem" v-on:click="showPending()">Incomplete</p>
-    <p class="menuitem" v-on:click="showStatements()">Statements</p>
+    <p class="menuitem" :class="{active: searchIsActive }" v-on:click="showUserSearch()">Search</p>
+    <p class="menuitem" :class="{active: pendingIsActive }" v-on:click="showPending()">Incomplete</p>
+    <p class="menuitem" :class="{active: statementsIsActive }" v-on:click="showStatements()">Statements</p>
     
     <router-link v-bind:to="{ name: 'logout' }" style="text-decoration: none"><p class="menuitem">Log out</p></router-link>
   
@@ -29,6 +29,7 @@ import MenuPanelBlurb from '../components/MenuPanelBlurb'
 
 export default {
 name: "menu-panel",
+
 components: {
   MenuPanelBlurb
 },
@@ -43,7 +44,11 @@ data() {
     firstname: null,
     lastname: null
    },
-  checkIt: 0
+  checkIt: 0,
+  searchIsActive: false,
+  pendingIsActive: false,
+  statementsIsActive: false
+
   }
 },
 created() {
@@ -76,18 +81,28 @@ methods: {
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_STATEMENTS", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+    this.searchIsActive = false;
+    this.statementsIsActive = true;
+    this.pendingIsActive = false;
   },
   showPending() {
     this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+    this.searchIsActive = false;
+    this.statementsIsActive = false;
+    this.pendingIsActive = true;
   },
+  
   showUserSearch() {
     this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_USER_SEARCH", true);
+    this.searchIsActive = true;
+    this.statementsIsActive = false;
+    this.pendingIsActive = false;
   },
   allFalse() {
     
@@ -113,9 +128,7 @@ methods: {
   
 }
 
-#pay-or-request.hover {
 
-}
 
 .menuitem {
   color: black;
@@ -162,4 +175,10 @@ methods: {
 position: sticky;
   top: 0;
 }
+
+.active {
+  font-weight: bold;
+}
+
+
 </style>

@@ -30,7 +30,8 @@ export default new Vuex.Store({
     accountId: null,
     balance: null,
     firstname: null,
-    lastname: null  
+    lastname: null,
+    hasProfile: null
     },
   },
   mutations: {
@@ -76,6 +77,9 @@ export default new Vuex.Store({
       state.UserSearch = false;
       state.showPending = false;
       state.showStatements = false;
+    },
+    PROFILE_NEEDED(state, bool) {
+      state.hasProfile = bool;
     },
     SUBTRACT_FUNDS(state, amount) {
       state.activeUser.balance -= amount;

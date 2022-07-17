@@ -122,12 +122,40 @@ public class JdbcUserDao implements UserDao {
 
     }
 
+    public List<User> getUserNamesAlternate(String searchname) {
+        System.out.println("Getting usernames alternately.");
+        String sql = "SELECT tenmo_user.user_id, username, account.firstname, account.lastname " +
+                "FROM tenmo_user " +
+                "JOIN account ON tenmo_user.user_id = account.user_id " +
+                "WHERE username ILIKE ? OR account.firstname ILIKE ? OR account.lastname ILIKE ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, searchname + "%", searchname + "%", searchname + "%");
+        List<User> userlist = new ArrayList<>();
+        while (results.next()) {
+            User user = mapRowToUserMedium(results);
+            userlist.add(user);
+
+        }
+        return userlist;
+
+
+    }
+
     private User mapRowToUserShort(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getLong("user_id"));
         user.setUsername(rs.getString("username"));
         user.setAccount_id(user.getId() + 1000);
 
+        return user;
+    }
+
+    private User mapRowToUserMedium(SqlRowSet rs) {
+        User user = new User();
+        user.setId(rs.getLong("user_id"));
+        user.setUsername(rs.getString("username"));
+        user.setAccount_id(user.getId() + 1000);
+        user.setFirstName(rs.getString("firstname"));
+        user.setLastName(rs.getString("lastname"));
         return user;
     }
 }

@@ -19,7 +19,7 @@ public interface UserDao {
 
 //    BigDecimal getBalance(String username);
 
-
+    List<User> getUserNamesAlternate(String username);
 
 
 }

@@ -63,6 +63,7 @@ export default {
             this.$store.commit("SET_AUTH_TOKEN", response.data.token);
             this.$store.commit("SET_USER", response.data.user);
             this.$store.commit("SET_ALL_FALSE");
+            this.$store.commit("PROFILE_NEEDED");
             this.$router.push("/postlogin");
           }
         })
