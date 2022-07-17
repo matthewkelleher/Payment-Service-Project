@@ -1,6 +1,6 @@
 <template>
   <div id="login-page">
-    <span id="headline"><h2 style="text-align:center">Sign in to Tenmo</h2></span>
+    <div id="headline"><h2 style="text-align:center">Sign in to Tenmo</h2></div>
     <div v-if="this.invalidCredentials == true" class="alert alert-danger" style="text-align: center">Your username or password was incorrect.</div>
     <b-form @submit.prevent="login" class="login-form">
       <b-form-group
@@ -83,7 +83,7 @@ export default {
 .login-form {
   height: 25%;
   width: 25%;
-  margin-top: 10%;
+  margin-top: 5%;
   margin-left: auto;
   margin-right: auto;  
   width: 33%;
@@ -142,6 +142,7 @@ h2 {
 
 #username-input {
 font-variant: all-small-caps;
+
 }
 
 #password-input {
@@ -153,5 +154,10 @@ font-variant: all-small-caps;
   display: flex;
   justify-content: space-between;
 }
+
+#headline {
+  padding-top: 5%;
+}
+
 </style>
 

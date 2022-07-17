@@ -90,7 +90,8 @@
 </div>
 
 <div v-if="this.$store.state.showPending == true && this.pendingTransfers.length == 0" class="pending-statements">
-<h3 id="pending-header">Incomplete</h3></div>
+<h3 id="pending-header">Incomplete</h3>
+<p>You have no pending transactions.</p></div>
 
   <div v-if="this.$store.state.showUserSearch == true" class="userSearch">
     <h3>Search</h3>
@@ -231,6 +232,7 @@ methods: {
 
   pushToTransfer(input) {
     this.toUserName = input;
+    this.search = '';
     this.$store.state.showUserSearch = false;
     this.$store.state.payClicked = true;
 

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav" v-if="this.currentRouteName != 'mainpage'" :class="{change_color: scrollPosition > 50}">
+    <div id="nav-two" v-if="this.currentRouteName == 'login' || this.currentRouteName == 'register' || this.currentRouteName == 'postlogin'" :class="{change_color: scrollPosition > 50}">
      
       <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
       <div class="dropdown">
@@ -12,8 +12,24 @@
       <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }" v-if="$store.state.token == ''"><span class="navitem" >Log in</span></router-link>
       
       <router-link style="text-decoration: none" v-bind:to="{ name: 'register'}">
-      <b-button pill id="get-tenmo" v-on:click="payClicked()" title="Get TEnmo"><span id="get-tenmo-inner"><span class="logo-t">t</span>&emsp;Get Tenmo</span></b-button></router-link>
+      <b-button pill id="get-tenmo" v-on:click="payClicked()" title="Get TEnmo"><span id="get-tenmo-inner"><span class="logo-t">t</span>&emsp;<span class="get-tenmo-text">Get Tenmo</span></span></b-button></router-link>
     </div>
+    <div id="nav" v-else-if="this.currentRouteName != 'mainpage'" :class="{change_color: scrollPosition > 50}">
+     
+      <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
+      <div class="dropdown">
+        <div class="within-dropdown">About <span class="v-thing" style="vertical-align: baseline">⌄</span>
+        <div class="dropdown-content">
+        <div id="first-item-container"><span id="first-item">Why?</span></div>
+        <div id="second-item-container"><span id="second-item">Why not?</span></div></div></div></div>
+      <router-link style="text-decoration: none" v-bind:to="{ name: 'logout' }"  v-if="$store.state.token != ''"><span class="navitem">Log out</span></router-link>
+      <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }" v-if="$store.state.token == ''"><span class="navitem" >Log in</span></router-link>
+      
+      <router-link style="text-decoration: none" v-bind:to="{ name: 'register'}">
+      <b-button pill id="get-tenmo" v-on:click="payClicked()" title="Get TEnmo"><span id="get-tenmo-inner"><span class="logo-t">t</span>&emsp;<span class="get-tenmo-text">Get Tenmo</span></span></b-button></router-link>
+    </div>
+    
+    
     <router-view />
   </div>
 </template>
@@ -35,7 +51,7 @@ export default {
   },
   methods: {
     payClicked() {
-      this.$store.commit("PAY_CLICKED", false);
+    this.$store.commit("PAY_CLICKED", false);
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_USER_SEARCH", false);
@@ -66,19 +82,37 @@ html, body {
 #app {
 
   background-color: rgb(242,249,255);
+ 
 }
 #nav {
   position: sticky;
   justify-content: space-around;
-  margin-left: 5%;
+  margin-left: 10%;
+ 
   margin-right: 20%;
   display: flex;
-  padding-top: 1%;
+  padding-top: 2%;
   align-items: center;
-  padding-left: 1%;
-  top: 0;
-  margin: 0;
+  
+   
   z-index: 5;
+  
+  
+}
+
+#nav-two {
+  
+  justify-content: space-around;
+  
+  background-color: white;
+  
+  display: flex;
+  padding-top: 2%;
+  align-items: center;
+  
+   
+ 
+  
   
 }
 
@@ -101,11 +135,11 @@ a:hover {
 #get-tenmo {
   background-color: white;
   color: black;
-  font-size: 12px;
-  display: inline;
   width: 150px!important;
-  border: 1px solid black!important;
-  max-height: 50px!important;
+  max-height: 45px;
+ 
+  border: 1.5px solid black!important;
+ 
 }
 
 #get-tenmo:hover {
@@ -118,6 +152,7 @@ a:hover {
   font-weight: 800;
   font-size: 30px;
   font-style: italic;
+  
   
   
 }
@@ -135,18 +170,23 @@ a:hover {
 
 .logo-t {
   color: rgba(0,140,255);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
   font-style: italic;
-  vertical-align: baseline;
+  position: relative;
+  top: 2px;
  
 }
 
 #get-tenmo-inner {
-  text-align: center;
+  
  
   font-weight: 500;
   font-size: 14px;
+  position: relative;
+  top: -10px;
+  left: -4px;
+  
 }
 
 .dropdown:hover .dropdown-content {
@@ -155,10 +195,7 @@ a:hover {
   font-family: "Athletics"}
 
 
-#first-item-container {
- 
- 
-}
+
 
 
 #first-item {
@@ -207,5 +244,10 @@ a:hover {
 
 .change_color {
   background-color: white;
+}
+
+#get-tenmo-text {
+  position: relative;
+  top: 100!;
 }
 </style>

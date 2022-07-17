@@ -1,17 +1,21 @@
 <template>
   <div id="register" class="text-center">
+    <div id="headline-container">
+    <h2 style="text align: center">Create Account</h2>
+    </div>
     <div>
       <b-container fluid>
     <b-form @submit.prevent="register" class="register-form">
-      <h1 class="h3 mb-3 font-weight-normal">Create Account</h1>
+      
       
      
       <b-form-group id="username-group"
-      label-for="username">
+      label-for="username"
+      label="Username">
       <b-form-input
       
         id="username"
-        placeholder="Username"
+        
         v-model="user.username"
         required
         
@@ -19,24 +23,28 @@
       </b-form-group>
       
       <b-form-group
-      label-for="password">
+      id="password-group"
+      label-for="password"
+      label="Password">
       <b-form-input
        
         id="password"
         
-        placeholder="Password"
+      
         v-model="user.password"
         required
         
       ></b-form-input>
       </b-form-group>
       <b-form-group
-       label-for="confirm-password">
+      id="confirm-group"
+       label-for="confirm-password"
+       label="Confirm Password">
       <b-form-input
        
         id="confirm-password"
         
-        placeholder="Confirm Password"
+        
         v-model="user.confirmPassword"
         required
         
@@ -44,7 +52,7 @@
       </b-form-group>
      
       <b-button pill type="submit" variant="primary">
-        Create Account
+        Get Started
       </b-button>
     </b-form>
       </b-container>
@@ -95,7 +103,7 @@ export default {
               this.$router.push({
                 path: '/login',
                 query: { registration: 'success' },
-              }), 3000);
+              }), 1500);
               
             }
           })
@@ -103,7 +111,7 @@ export default {
             const response = error.response;
             this.registrationErrors = true;
             if (response.status === 400) {
-              this.registrationErrorMsg = 'Bad Request: Validation Errors';
+              this.registrationErrorMsg = 'An account with this name already exists.';
             }
           });
       }
@@ -120,7 +128,7 @@ export default {
 .register-form {
 height: 25%;
   width: 25%;
-  margin-top: 10%;
+  margin-top: 5%;
   margin-left: auto;
   margin-right: auto;  
   width: 33%;
@@ -138,14 +146,24 @@ height: 25%;
   background-color: white;
 }
 
-#username {
 
+#username {
 background-color: rgb(243, 241, 241);
 border-top: none;
 border-right: none;
 border-left: none;
-
 }
+
+#username:focus {
+  border-color: none !important;
+  box-shadow: none;
+}
+
+#password:focus {
+  border-color: none !important;
+  box-shadow: none;
+}
+
 
 #password {
 background-color: rgb(243, 241, 241);
@@ -160,5 +178,27 @@ border-top: none;
 border-right: none;
 border-left: none;
 }
+
+#confirm-password:focus {
+  border-color: none !important;
+  box-shadow: none;
+}
+
+#username-group {
+font-variant: all-small-caps;
+}
+
+#password-group {
+  font-variant: all-small-caps;
+}
+
+#confirm-group {
+  font-variant: all-small-caps;
+}
+
+#headline-container {
+  padding-top: 5%;
+}
+
 
 </style>
