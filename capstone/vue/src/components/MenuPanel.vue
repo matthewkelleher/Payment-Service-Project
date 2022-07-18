@@ -74,6 +74,9 @@ methods: {
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("PAY_CLICKED", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+    this.searchIsActive = false;
+    this.statementsIsActive = false;
+    this.pendingIsActive = false;
 
   },
   showStatements() {
@@ -110,6 +113,9 @@ methods: {
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_USER_SEARCH", false);
+    this.searchIsActive = false;
+    this.statementsIsActive = false;
+    this.pendingIsActive = false;
   },
 
   formatMoney(number) {

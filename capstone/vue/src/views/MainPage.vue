@@ -49,6 +49,7 @@ data() {
 .main-body {
  border-left: 1px solid lightgrey;
  height: 100vh;
+ 
   
 }
 </style>

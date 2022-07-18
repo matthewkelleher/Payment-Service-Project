@@ -4,14 +4,25 @@
 
  
 <div v-if="this.$store.state.payClicked == true" class="payment-container">
-
+ {{this.transfer.amount}}
   <p style="font-weight: 500; text-align: center">TEnmo | Pay & Request</p>
     <div class="autocomplete">
-    <b-form-input class="pay-request-input" id="money-input" 
-    onkeydown="this.style.minWidth = (this.value.length + 3) + 'ch'" placeholder="0" v-model="transfer.amount" type="number" required></b-form-input>
-    <b-form-input class="pay-request-input" placeholder="To" v-model="toUserName" required></b-form-input>
-    <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" no-resize></b-form-textarea>
-    <b-button pill v-on:click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill v-on:click="requestMoney()" class="pay-request-buttons">Request</b-button>
+  
+   
+    <b-form-input class="pay-request-input" id="money-input" style="border: none" @keypress="isNumber($event)"
+    onkeydown="this.style.minWidth = (this.value.length + 2) + 'ch'" placeholder="0" v-model="transfer.amount" type="text" maxlength="8" required 
+   ></b-form-input>
+ 
+  
+    <b-form-input id="username-input" class="pay-request-input" placeholder="To" v-model="toUserName" required></b-form-input>
+   
+   
+    <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" no-resize required></b-form-textarea>
+    
+    <div id="pay-request-button-container">
+    <b-button pill type="submit" @click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill type="submit" @click="requestMoney()" class="pay-request-buttons">Request</b-button>
+    </div>
+   
     </div>
     </div>    
 
@@ -105,7 +116,7 @@
   </div>
   
     <div v-for="userResult in userList" v-bind:key="userResult.account_id" class="usernameResult" @click="pushToTransfer(userResult.username)">
-    <span id="username-search-result">{{userResult.username}}</span>
+    <span id="username-search-result" style="color: slategray">{{userResult.username}}</span>
     <span id="firstname-lastname-search-result">{{userResult.firstName}}&nbsp;{{userResult.lastName}}</span>
     <span id="userimage-search-result"><img id="statement-image" :src="imageFinder(userResult.account_id)"></span>
     </div>
@@ -128,16 +139,19 @@ data() {
         amount: 0,
         toUserName: "",
         username: "",
-        
+        errorMsg: '',
         
     transfer: {
     account_from: 0,
     account_to: 0,
     amount: '',
     note: '',
+   
     
     
    },
+   transferClicked: false,
+   requestClicked: false,
    user: {
     userId: null,
     balance: null,
@@ -180,6 +194,7 @@ mounted() {
   })
   
 },
+
 watch: {
   search: function() {
    if(this.search != '') {
@@ -193,34 +208,52 @@ watch: {
 methods: {
     
     transferMoney() {
-      if(this.transfer.account_to == this.transfer.account_from) {
+      this.removeWindow()
+      if(this.toUserName == '') {
+        this.shakeWindow('username-input')
+        return;
+      }
+      if(this.toUserName == this.user.userName) {
         this.transfer.account_to = 0;
         this.toUserName = '';
-        window.alert("You cannot transfer to your own account.")
-        
+        this.shakeWindow('username-input')
+        return;
       }
-        if(this.transfer.amount <= this.user.balance && this.transfer.amount > 0) {
+      if(this.transfer.amount < 0.01) {
+        this.shakeWindow('money-input')
+        return;
+      }
+
+      if(this.transfer.note == '') {
+        this.shakeWindow('note-input')
+        return;
+      }
+
+      if(this.transfer.amount > this.user.balance) {
+        
+        this.shakeWindow('money-input')
+        return;
+      }
+      
+        if(this.transfer.amount <= this.user.balance && this.transfer.amount >= 0.01) {
         TransferService.getUserId(this.toUserName).then((response) => {
+            console.log(response.status)
             this.transfer.account_to = response.data;
-            console.log(this.transfer)
+           
             TransferService.send(this.transfer).then(() => {
             console.log("Money sent.");
         this.$store.commit("SUBTRACT_FUNDS", this.transfer.amount);
         this.transfer.account_from = this.user.userId;
         this.transfer.account_to = 0;
         this.amount = 0;
+        this.transfer.amount = 0;
         this.transfer.note = '';
-        }) 
-        })
-        } else if(this.transfer.amount <= 0) {
-          window.alert("Must transfer more than $0.")
-        } else {
-          window.alert("Trying to transfer more than you have.")
-        }
-        
-        
-
-},
+            })
+        },
+        (error) => { if(error.response.status == 401) {
+                this.shakeWindow('username-input')
+            } })
+}},
   listTransfers() {
     TransferService.list().then((response) => {
       this.listOfTransfers = response.data;
@@ -229,6 +262,23 @@ methods: {
     })
     
   },
+
+  shakeWindow(item) {
+    var element = document.getElementById(item);
+    element.classList.add('shake-window');
+    
+   },
+  removeWindow() {
+    var element = document.getElementById('username-input');
+    var element2 = document.getElementById('money-input');
+    var element3 = document.getElementById('note-input');
+    element.classList.remove("shake-window");
+    element2.classList.remove("shake-window");
+    element3.classList.remove("shake-window");
+
+   
+  },
+ 
 
   pushToTransfer(input) {
     this.toUserName = input;
@@ -267,6 +317,20 @@ methods: {
      
     })
   },
+  isNumber(evt) {
+   
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();
+      } else if(charCode === 46 && this.transfer.amount.includes(".")) {
+        evt.preventDefault();
+      } else if(this.transfer.amount.match(/^[0-9]*\.[0-9][0-9]$/)) {
+          evt.preventDefault();
+         } else {
+          return true;
+      }
+  },
   getUserNames() {
     TransferService.getUsernames(this.search).then((response => {
       this.userList = response.data;
@@ -275,36 +339,51 @@ methods: {
  
  
     requestMoney() {
+       this.removeWindow()
        this.transfer.account_to = this.user.userId
-       if(this.transfer.account_to == this.transfer.account_from) {
+       if(this.toUserName == this.user.userName) {
+        this.shakeWindow('username-input')
+        
         this.transfer.account_to = 0;
         this.toUserName = '';
-        window.alert("You cannot request money from yourself.")
-       }
+       return;
+       } else if(this.transfer.amount < 0.01) {
+        this.transfer.amount = 0;
+        this.shakeWindow('money-input')
+        return;
+       } else if(this.transfer.note == '') {
+        this.shakeWindow('note-input')
+        return;
+       } else {
        TransferService.getUserId(this.toUserName).then((response) => {
+            console.log(response.status);
+            
             this.transfer.account_from = response.data;
+           
             TransferService.request(this.transfer).then(() => {
-            console.log("Money requested.");
+           
             this.transfer.account_from = this.user.userId;
             this.transfer.account_to = 0;
             this.amount = 0;
+            this.transfer.amount = 0;
             this.transfer.note = '';
+            this.toUserName = '';
         }) 
+            },
+            (error) => { if(error.response.status == 401) {
+                this.shakeWindow('username-input')
+            } }
+        )
         
-            
-        })
-        
-    }},
+    }}},
     
 }
 </script>
 
 <style>
-
-body {
+.page {
   font-family: "Athletics";
 }
-
 
 
 
@@ -341,9 +420,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 #money-input {
   width: 64px!important;
- 
+  
+  font-family: 'Courier New', Courier, monospace;
   height: 100px;
-  font-size: 36px;
+  font-size: 42px;
+  font-weight: 600;
 }
 
 h3 {
@@ -351,26 +432,41 @@ h3 {
 }
 
 .autocomplete {
-
+ 
  text-align: center;
  
  
+}
+
+.input-group-prepend .input-group-text {
+  background-color: white;
+  border: none!important;
 }
 
 .pay-request-buttons {
   background-color: rgba(0,140,255)!important;
   width: 200px;
   font-weight: bold!important;
+  font-family: Helvetica;
 }
 
 
 
-.usernameResult:hover {
+.usernameResult:hover  {
   background-color: rgba(0,140,255);
-  color: white;
+  color: white!important;
   cursor: pointer;  
   border-radius: 10px;
 }
+
+.usernameResult:hover *  {
+  background-color: rgba(0,140,255);
+  color: white!important;
+  cursor: pointer;  
+  
+}
+
+
 
 .usernameResult {
   display: grid;
@@ -378,19 +474,24 @@ h3 {
   grid-template-rows: 50px;
   max-height: 75px;
   padding-left: 10%;
+  
 }
 #username-search-result {
 grid-column-start: 2;
 grid-column-end: 2;
 grid-row-start: 2;
 grid-row-end: 2;
+
+font-weight: bold;
 }
+
 
 #firstname-lastname-search-result {
 grid-column-start: 2;
 grid-column-end: 2;
 grid-row-start: 1;
-grid-row-end: 1
+grid-row-end: 1;
+font-weight: bold;
 }
 
 #userimage-search-result {
@@ -419,7 +520,8 @@ grid-row-end: 2;
   width: 400px!important;
   margin: 20px;
   margin: 0 auto;
-  float: none
+  
+ 
 }
 
 .grid-container {
@@ -555,4 +657,33 @@ grid-column-start: 2;
  
 }
 
+#cash-input {
+  width: 1ch;
+}
+
+.shake-window {
+  animation-name: shakeError;
+  animation-fill-mode: forwards;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  border: 3px solid red!important;
+}
+
+@keyframes shakeError {
+  0% {
+    transform: translateX(0); }
+  15% {
+    transform: translateX(0.375rem); }
+  30% {
+    transform: translateX(-0.375rem); }
+  45% {
+    transform: translateX(0.375rem); }
+  60% {
+    transform: translateX(-0.375rem); }
+  75% {
+    transform: translateX(0.375rem); }
+  90% {
+    transform: translateX(-0.375rem); }
+  100% {
+    transform: translateX(0); } }
 </style>
