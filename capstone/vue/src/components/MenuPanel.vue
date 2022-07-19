@@ -2,7 +2,7 @@
   
 
   <div id="menubar" :key="checkIt">
-  
+ 
     <router-link @click="allFalse()" style="text-decoration: none" v-bind:to="{ name: 'home' }"><p id="tenmo-logo">tenmo</p></router-link>
     <MenuPanelBlurb/>
     <b-button pill size="lg" id="pay-or-request" v-if="this.$store.state.payClicked == false" v-on:click="payClicked()">
@@ -74,6 +74,7 @@ methods: {
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("PAY_CLICKED", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+    
     this.searchIsActive = false;
     this.statementsIsActive = false;
     this.pendingIsActive = false;
@@ -84,6 +85,7 @@ methods: {
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_STATEMENTS", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+   
     this.searchIsActive = false;
     this.statementsIsActive = true;
     this.pendingIsActive = false;
@@ -93,6 +95,7 @@ methods: {
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", true);
     this.$store.commit("SHOW_USER_SEARCH", false);
+   
     this.searchIsActive = false;
     this.statementsIsActive = false;
     this.pendingIsActive = true;
@@ -103,9 +106,10 @@ methods: {
     this.$store.commit("SHOW_STATEMENTS", false);
     this.$store.commit("SHOW_PENDING", false);
     this.$store.commit("SHOW_USER_SEARCH", true);
-    this.searchIsActive = true;
+   
     this.statementsIsActive = false;
     this.pendingIsActive = false;
+    this.searchIsActive = true;
   },
   allFalse() {
     
@@ -175,6 +179,7 @@ methods: {
   font-size: 30px;
   font-style: italic;
   color: white !important;
+ 
 }
 
 #menubar {

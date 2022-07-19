@@ -24,6 +24,7 @@ export default new Vuex.Store({
     showStatements: false,
     showPending: false,
     showUserSearch: false,
+   
     activeUser: {
     userName: null,
     userId: null,
@@ -31,7 +32,7 @@ export default new Vuex.Store({
     balance: null,
     firstname: null,
     lastname: null,
-    hasProfile: null
+    hasProfile: false,
     },
   },
   mutations: {
@@ -51,6 +52,7 @@ export default new Vuex.Store({
       state.UserSearch = false;
       state.showPending = false;
       state.showStatements = false;
+     
       state.token = '';
       state.user = {};
       axios.defaults.headers.common = {};
@@ -67,10 +69,14 @@ export default new Vuex.Store({
     SHOW_USER_SEARCH(state, bool) {
       state.showUserSearch = bool;
     },
+   
     SET_ACTIVE_USER(state, user) {
       state.activeUser = user;
       
       
+    },
+    CLEAR_ACTIVE_USER(state) {
+      state.activeUser = null;
     },
     SET_ALL_FALSE(state) {
       state.payClicked = false;

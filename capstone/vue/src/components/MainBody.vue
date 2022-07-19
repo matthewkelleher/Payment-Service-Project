@@ -1,23 +1,38 @@
 <template>
 <div class="page">
 
+<div v-if="this.$store.state.payClicked == false &&
+this.$store.state.showStatements == false &&
+this.$store.state.showPending == false &&
+this.$store.state.showUserSearch == false">
+<div class="landing-page-container text-center">
+<p style="font-weight: bold">You can't use Tenmo alone, so make some friends (or enemies) by sending (or requesting) money!</p>
+<br>
+<p>Hit up your roommate, significant other, or anyone who might have some spare cash.</p>
+<br>
+<b-button pill class="pay-request-buttons" id="search-button" @click="goToSearch()">Find some people you know</b-button> </div>
+ </div>
+<div v-if="this.$store.state.payClicked == true" class="payment-container">
+ 
+  <p style="position: relative; left: -5px; font-weight: 500; text-align: center">TEnmo | Pay & Request</p>
+    <div class="autocomplete">
+     <br>
+  
+    <input id="dollar" value="$" readonly/><input class="pay-request-input" id="money-input" style="border: none" @keypress="isNumber($event)" 
+    onkeyup="this.style.minWidth = (this.value.length + 2) + 'ch'" placeholder="0" v-model="transfer.amount" type="text" maxlength="7" required/>
 
  
-<div v-if="this.$store.state.payClicked == true" class="payment-container">
- {{this.transfer.amount}}
-  <p style="font-weight: 500; text-align: center">TEnmo | Pay & Request</p>
-    <div class="autocomplete">
-  
-   
-    <b-form-input class="pay-request-input" id="money-input" style="border: none" @keypress="isNumber($event)"
-    onkeydown="this.style.minWidth = (this.value.length + 2) + 'ch'" placeholder="0" v-model="transfer.amount" type="text" maxlength="8" required 
-   ></b-form-input>
- 
-  
+    <br>
+    <br>   
+    <br>
     <b-form-input id="username-input" class="pay-request-input" placeholder="To" v-model="toUserName" required></b-form-input>
+    <br>
+    <br>
+    <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" maxlength="200" no-resize required></b-form-textarea>
+    <br>
+    <br>
    
-   
-    <b-form-textarea class="pay-request-input" id="note-input" placeholder="Note" v-model="transfer.note" rows="5" max-rows="5" no-resize required></b-form-textarea>
+ 
     
     <div id="pay-request-button-container">
     <b-button pill type="submit" @click="transferMoney()" class="pay-request-buttons">Pay</b-button> <b-button pill type="submit" @click="requestMoney()" class="pay-request-buttons">Request</b-button>
@@ -47,7 +62,7 @@
      
       <span v-else style="color: red; text-decoration: line-through">-{{formatMoney(pastTransfer.amount)}}</span></div>
     <div class="past-note">{{pastTransfer.note}}</div>
-    <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
+    <div class="past-image"><b-avatar variant="primary" size="4em" :src="imageFinder(pastTransfer.account_from)" :text="createAvatarText()"></b-avatar></div>
     </div>
     </div>
      
@@ -59,7 +74,7 @@
       <span v-if="pastTransfer.usernameTo == user.userName" style="color: green">{{formatMoney(pastTransfer.amount)}}</span>
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span></div>
     <div class="past-note">{{pastTransfer.note}}</div>
-    <div class="past-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
+    <div class="past-image"><b-avatar variant="primary" size="4em" :src="imageFinder(pastTransfer.account_from)"></b-avatar></div>
     </div>
     
    
@@ -92,9 +107,15 @@
       <span v-else style="color: red">-{{formatMoney(pastTransfer.amount)}}</span>
     </div>
     <div class="pending-note">{{pastTransfer.note}}</div>
-    <div class="pending-image"><img :src="imageFinder(pastTransfer.account_from)" id="statement-image"/></div>
-    <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill class="pending" @click="approveTransaction(pastTransfer)">Approve</b-button></div>
-    <div class="reject-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill variant="danger" class="reject" @click="rejectTransaction(pastTransfer)">Reject</b-button></div>
+    <div class="pending-image"><b-avatar variant="primary" size="4em" :src="imageFinder(pastTransfer.account_from)"></b-avatar></div>
+    <div class="pending-button" v-if="pastTransfer.usernameTo != user.userName">
+    <b-button v-if="user.balance >= pastTransfer.amount" pill size="sm" class="pending" @click="approveTransaction(pastTransfer)">Approve</b-button>
+    <b-button v-else disabled pill size="sm" class="pending">Approve</b-button>
+    </div>
+    <div class="pending-button" v-if="pastTransfer.usernameTo == user.userName">
+    <b-button pill variant="outline-primary" size="sm" disabled>Waiting</b-button>
+    </div>
+    <div class="reject-button" v-if="pastTransfer.usernameTo != user.userName"><b-button pill variant="danger" size="sm" class="reject" @click="rejectTransaction(pastTransfer)">Reject</b-button></div>
   </div>
   </div> 
   
@@ -109,16 +130,17 @@
  
     <div>
       <b-input-group size="m" class="mb-2">
-      <b-input-group-prepend is-text>
-        <b-icon icon="search"></b-icon>
+      <b-input-group-prepend>
+        <b-icon icon="search" id="search-icon"></b-icon>
       </b-input-group-prepend><b-form-input placeholder="Name or Username" v-model="search" class="theResults"><b-icon icon="search"></b-icon></b-form-input>
   </b-input-group>
   </div>
   
     <div v-for="userResult in userList" v-bind:key="userResult.account_id" class="usernameResult" @click="pushToTransfer(userResult.username)">
+    
     <span id="username-search-result" style="color: slategray">{{userResult.username}}</span>
     <span id="firstname-lastname-search-result">{{userResult.firstName}}&nbsp;{{userResult.lastName}}</span>
-    <span id="userimage-search-result"><img id="statement-image" :src="imageFinder(userResult.account_id)"></span>
+    <span id="userimage-search-result"><b-avatar variant="primary" id="avatar" size="4em" :src="imageFinder(userResult.account_id)"></b-avatar></span>
     </div>
   
   </div>
@@ -262,6 +284,9 @@ methods: {
     })
     
   },
+  goToSearch() {
+    this.$store.commit("SHOW_USER_SEARCH", true);
+  },
 
   shakeWindow(item) {
     var element = document.getElementById(item);
@@ -278,7 +303,9 @@ methods: {
 
    
   },
- 
+  createAvatarText() {
+
+  },
 
   pushToTransfer(input) {
     this.toUserName = input;
@@ -340,6 +367,9 @@ methods: {
  
     requestMoney() {
        this.removeWindow()
+       if(this.toUserName == '') {
+        this.shakeWindow('username-input')
+        return; }
        this.transfer.account_to = this.user.userId
        if(this.toUserName == this.user.userName) {
         this.shakeWindow('username-input')
@@ -419,20 +449,35 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 #money-input {
-  width: 64px!important;
   
+  width: 64px!important;
   font-family: 'Courier New', Courier, monospace;
-  height: 100px;
+  height: 64px;
   font-size: 42px;
   font-weight: 600;
+  border-style: hidden;
+  
+ 
+  
 }
+
+#money-input:focus {
+ box-shadow: none;
+ border-style: hidden;
+ outline: none;
+
+
+}
+
+
+
 
 h3 {
   font-family: "Athletics"
 }
 
 .autocomplete {
- 
+
  text-align: center;
  
  
@@ -470,7 +515,7 @@ h3 {
 
 .usernameResult {
   display: grid;
-  grid-template-columns: repeat(3, 100px); 
+  grid-template-columns: repeat(3, 120px); 
   grid-template-rows: 50px;
   max-height: 75px;
   padding-left: 10%;
@@ -524,6 +569,9 @@ grid-row-end: 2;
  
 }
 
+.pay-request-input:focus {
+  box-shadow: none!important; 
+}
 .grid-container {
   display: grid;
   border-bottom: 1px solid lightgrey;
@@ -547,7 +595,7 @@ grid-row-end: 2;
 
 .past-statement {
  grid-column-start: 2;
-  grid-column-end: 6;
+  grid-column-end: 5;
   grid-row-start: 1;
   grid-row-end: 1;
   
@@ -563,7 +611,7 @@ grid-column-start: 5;
 
 .past-note {
 grid-column-start: 2;
-  grid-column-end: 3;
+  grid-column-end: 4;
   grid-row-start: 2;
   grid-row-end: 2;
   
@@ -651,7 +699,7 @@ grid-column-start: 2;
 
 
 .payment-container {
-  margin-top: 50px;
+  margin-top: 10%;
   justify-content: center;
   align-items: center;
  
@@ -667,6 +715,7 @@ grid-column-start: 2;
   animation-duration: 1s;
   animation-timing-function: ease-in-out;
   border: 3px solid red!important;
+
 }
 
 @keyframes shakeError {
@@ -686,4 +735,45 @@ grid-column-start: 2;
     transform: translateX(-0.375rem); }
   100% {
     transform: translateX(0); } }
+
+#search-button {
+  width: 300px;
+}
+
+.landing-page-container {
+ width:50%;
+ height:500px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 25%;
+font-size: 20px;
+ 
+
+
+  
+}
+
+#dollar {
+  position: relative;
+  text-decoration: none;
+  width: 30px;
+  font-size: 24px;
+  box-shadow: none;
+  outline: none;
+  border-style: hidden;
+  top: -5px;
+  left: 5px;
+}
+
+#dollar:focus {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+#search-icon {
+  position: relative;
+  top: 8px;
+  left: -5px;
+}
 </style>

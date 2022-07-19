@@ -1,11 +1,12 @@
 <template>
 <div id="blah">
     <span id="image-here" :style="{'background-image':'url(' + image + ')'}">
-        
+     
        
   </span>
   <p id="welcome">Hi, {{this.firstname}}</p>
   
+  <p id="display-username">{{username}}</p>
   </div>
 </template>
 
@@ -17,10 +18,12 @@ username: '',
 firstname: '',
 userId: 0,
 image: '',
+
 created() {
     this.firstname = this.$store.state.activeUser.firstname + "";
     this.userId = this.$store.state.activeUser.accountId;
     this.image = this.userId + '.jpg';
+    this.username = this.$store.state.activeUser.userName + "";
    
 }
 }
@@ -51,9 +54,17 @@ created() {
     margin-bottom: 50px;
     grid-template-areas:
     "a b c d e"
-    "a b c d e";
+    "a f f d e";
     margin-left: auto;
     margin-right: auto;
+}
+
+#display-username {
+    grid-area: f;
+    font-size: 18px;
+    font-family: Helvetica;
+    font-weight: bold;
+    color: rgba(0,116,222);
 }
 
 

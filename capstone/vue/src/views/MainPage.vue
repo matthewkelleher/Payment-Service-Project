@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="left-panel">
-     
+    
     <MenuPanel/>
     </div>
     <div class="main-body">
@@ -30,7 +30,7 @@ data() {
 
 <style>
 .home {
-  height: 100vh;
+  
   display: grid;
   grid-template-columns: 1fr 3fr;
   grid-template-areas:
@@ -42,7 +42,7 @@ data() {
   
   
   margin-left: 10%;
-  height: 100vh;
+  
   
 }
 

@@ -3,11 +3,7 @@
     <div id="nav-two" v-if="this.currentRouteName == 'login' || this.currentRouteName == 'register' || this.currentRouteName == 'postlogin'" :class="{change_color: scrollPosition > 50}">
      
       <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
-      <div class="dropdown">
-        <div class="within-dropdown">About <span class="v-thing" style="vertical-align: baseline">⌄</span>
-        <div class="dropdown-content">
-        <div id="first-item-container"><span id="first-item">Why?</span></div>
-        <div id="second-item-container"><span id="second-item">Why not?</span></div></div></div></div>
+ 
       <router-link style="text-decoration: none" v-bind:to="{ name: 'logout' }"  v-if="$store.state.token != ''"><span class="navitem">Log out</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }" v-if="$store.state.token == ''"><span class="navitem" >Log in</span></router-link>
       
@@ -17,11 +13,10 @@
     <div id="nav" v-else-if="this.currentRouteName != 'mainpage'" :class="{change_color: scrollPosition > 50}">
      
       <router-link style="text-decoration: none" v-bind:to="{ name: 'home' }"><span id="tenmo-image" v-on:click="payClicked()" style="vertical-align:middle; color: rgba(0,140,255); font-size: 48px" >tenmo</span></router-link>
-      <div class="dropdown">
-        <div class="within-dropdown">About <span class="v-thing" style="vertical-align: baseline">⌄</span>
-        <div class="dropdown-content">
-        <div id="first-item-container"><span id="first-item">Why?</span></div>
-        <div id="second-item-container"><span id="second-item">Why not?</span></div></div></div></div>
+      <div id="about">About</div>
+      <b-tooltip target="about" triggers="hover">Here's a tooltip.</b-tooltip>
+      
+    
       <router-link style="text-decoration: none" v-bind:to="{ name: 'logout' }"  v-if="$store.state.token != ''"><span class="navitem">Log out</span></router-link>
       <router-link style="text-decoration: none" v-bind:to="{ name: 'login' }" v-if="$store.state.token == ''"><span class="navitem" >Log in</span></router-link>
       
@@ -189,10 +184,10 @@ a:hover {
   
 }
 
-.dropdown:hover .dropdown-content {
+/* .dropdown:hover .dropdown-content {
   display: block;
   background-color: white;
-  font-family: "Athletics"}
+  font-family: "Athletics"} */
 
 
 
@@ -216,7 +211,7 @@ a:hover {
   background-color: peachpuff;
 }
 
-.dropdown-content {
+/* .dropdown-content {
   display: none;
   position: absolute;
   background-color: #f1f1f1;
@@ -228,19 +223,19 @@ a:hover {
   
 
   
-}
+} */
 
-.dropdown {
+#about {
   font-weight: 500;
 }
 
-.within-dropdown {
-}
+/* .within-dropdown {
+} */
 
-.v-thing {
+/* .v-thing {
   color: rgb(0,140,255);
   font-weight: bold;
-}
+} */
 
 .change_color {
   background-color: white;

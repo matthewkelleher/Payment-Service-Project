@@ -1,8 +1,10 @@
 <template>
 
   <div class="postlogin">
-
-  <div v-if="this.$store.state.activeUser.hasProfile != true">
+ {{user}}
+ {{this.$store.state.activeUser}}
+ {{loading}}
+  <div v-if="this.$store.state.activeUser.hasProfile != true && user.userId != null">
 <div class="headline-container">
 <span id="headline"><h2 style="text-align:center">Please complete your profile</h2></span>
 </div>
@@ -26,10 +28,12 @@
 
 </b-form>
 </div>
-
-<div v-if="user.firstname != null">
+<div v-if="user.lastname != null">
     {{pushIt()}}
 </div>
+<!-- <div v-if="user.userId == null && this.loading == false">
+  {{restartIt()}}}
+</div> -->
 
 
 </div>
@@ -54,7 +58,8 @@ data() {
         firstname: null,
         lastname: null,
         userId: null
-    }
+    },
+    loading: false,
 }
 },
 created() {
@@ -65,6 +70,7 @@ created() {
     this.user.userName = response.data.username;
     this.user.firstname = response.data.firstName;
     this.user.lastname = response.data.lastName;
+    this.loading = true;
     
   })
 },
@@ -76,7 +82,7 @@ TransferService.balance().then((response) => {
     this.user.userName = this.enterUser.username = response.data.username;
     this.user.firstname = response.data.firstName;
     this.user.lastname = response.data.lastName;
-    
+    this.loading = false;
   })
 },
 methods: {

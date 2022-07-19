@@ -19,9 +19,11 @@
         id="password-input"
         label="Password"
         label-for="input-2"
+        
         >
         <b-form-input 
           id="input-2"
+          type="password"
           v-model="user.password"
           required>
         </b-form-input>
@@ -62,6 +64,7 @@ export default {
           if (response.status == 200) {
             this.$store.commit("SET_AUTH_TOKEN", response.data.token);
             this.$store.commit("SET_USER", response.data.user);
+            this.$store.commit("SET_ACTIVE_USER", response.data.user)
             this.$store.commit("SET_ALL_FALSE");
             this.$store.commit("PROFILE_NEEDED");
             this.$router.push("/postlogin");

@@ -4,6 +4,12 @@
     <h2 style="text align: center">Create Account</h2>
     </div>
     <div>
+      <div class="alert alert-danger" role="alert" v-if="registrationErrors">
+        {{ registrationErrorMsg }}
+      </div>     
+      <div class="alert alert-success" role="alert" v-if="registrationSuccess">
+        {{ registrationSuccessMsg }}
+      </div> 
       <b-container fluid>
     <b-form @submit.prevent="register" class="register-form">
       
@@ -29,7 +35,7 @@
       <b-form-input
        
         id="password"
-        
+        type="password"
       
         v-model="user.password"
         required
@@ -41,7 +47,7 @@
        label-for="confirm-password"
        label="Confirm Password">
       <b-form-input
-       
+        type="password"
         id="confirm-password"
         
         
@@ -56,12 +62,7 @@
       </b-button>
     </b-form>
       </b-container>
-      <div class="alert alert-danger" role="alert" v-if="registrationErrors">
-        {{ registrationErrorMsg }}
-      </div>     
-      <div class="alert alert-success" role="alert" v-if="registrationSuccess">
-        {{ registrationSuccessMsg }}
-      </div> 
+    
     </div>
     <router-link :to="{ name: 'login' }">Have an account?</router-link>
    
