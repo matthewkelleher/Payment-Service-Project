@@ -89,11 +89,12 @@ this.$store.state.showUserSearch == false">
   
   </div>
   <div class="statements" v-if="this.$store.state.showStatements == true && this.listOfTransfers.length == 0">
+  
   <h3 id="completed-header">Completed Transactions</h3>
    <p>Sorry, no transactions to display.</p>
   </div>
   <div class="pending-statements" v-if="this.$store.state.showPending == true && this.pendingTransfers.length >= 1">
-  
+   
 <h3 id="pending-header">Incomplete</h3>
   
       <div v-for="pastTransfer in pendingTransfers"
@@ -144,7 +145,11 @@ this.$store.state.showUserSearch == false">
     </div>
   
   </div>
- 
+  <br>
+ <div v-if="this.rejectedMessage != ''" class="alert alert-info" role="alert" style="text-align: center">{{rejectedMessage}}</div>
+<div v-if="this.approvedMessage != ''" class="alert alert-success" role="alert" style="text-align: center">{{approvedMessage}}</div>
+<div v-if="this.sentMessage != ''" class="alert alert-success" role="alert" style="text-align: center">{{sentMessage}}</div>
+<div v-if="this.requestedMessage != ''" class="alert alert-info" role="alert" style="text-align: center">{{requestedMessage}}</div>
  
 
  
@@ -164,12 +169,11 @@ data() {
         errorMsg: '',
         
     transfer: {
-    account_from: 0,
-    account_to: 0,
+    account_from: '',
+    account_to: '',
     amount: '',
     note: '',
    
-    
     
    },
    transferClicked: false,
@@ -185,7 +189,11 @@ data() {
    pendingTransfers: [],
    userList: [],
    search: '',
-
+   approvedMessage: '',
+   rejectedMessage: '',
+   sentMessage: '',
+   requestedMessage: '',
+   approved: false
     }
 
     
@@ -198,7 +206,15 @@ updated() {
     this.getPending()
   }
 
-  
+  if(this.$store.state.showUserSearch == false && this.search != '') {
+    this.search = ''
+  }
+
+  if(this.$store.state.payClicked == false && (this.transfer.amount != '' || this.transfer.note != '' || this.toUserName != '')) {
+    this.transfer.amount = '';
+    this.transfer.note = '';
+    this.toUserName = '';
+  }
 },
 
 mounted() {
@@ -265,11 +281,16 @@ methods: {
             TransferService.send(this.transfer).then(() => {
             console.log("Money sent.");
         this.$store.commit("SUBTRACT_FUNDS", this.transfer.amount);
+        this.sentMessage = 'You sent ' + '$' + this.transfer.amount + '.'
+        setTimeout(() => this.sentMessage = '', 3000)
         this.transfer.account_from = this.user.userId;
-        this.transfer.account_to = 0;
+        this.toUserName = '';
+        this.transfer.account_to = '';
         this.amount = 0;
         this.transfer.amount = 0;
+        this.transfer.amount = '';
         this.transfer.note = '';
+        
             })
         },
         (error) => { if(error.response.status == 401) {
@@ -322,14 +343,18 @@ methods: {
     if(approved.amount <= this.user.balance) {
     TransferService.approve(approved).then(() => {
       this.$store.commit("SUBTRACT_FUNDS", approved.amount);
-    })
+      this.approved = true;
+      this.approvedMessage = 'You sent ' + '$' + approved.amount + ' to ' + approved.nameTo + '.'
+      setTimeout(() => this.approvedMessage = '', 3000)
+    }) 
   } else {
     window.alert("You don't have enough money to approve this!")
   }
   },
   rejectTransaction(rejected) {
     TransferService.reject(rejected).then(() => {
-      console.log("Done.")
+      this.rejectedMessage = 'You rejected a request for ' + '$' + rejected.amount + ' from ' + rejected.nameFrom + '.'
+      setTimeout(() => this.rejectedMessage = '', 3000)
     })
   },
   imageFinder(id) {
@@ -378,7 +403,7 @@ methods: {
         this.toUserName = '';
        return;
        } else if(this.transfer.amount < 0.01) {
-        this.transfer.amount = 0;
+        this.transfer.amount = '';
         this.shakeWindow('money-input')
         return;
        } else if(this.transfer.note == '') {
@@ -391,13 +416,15 @@ methods: {
             this.transfer.account_from = response.data;
            
             TransferService.request(this.transfer).then(() => {
-           
+            this.requestedMessage = 'You requested ' + '$' + this.transfer.amount + '.'
+            setTimeout(() => this.requestedMessage = '', 3000)
             this.transfer.account_from = this.user.userId;
-            this.transfer.account_to = 0;
-            this.amount = 0;
-            this.transfer.amount = 0;
+            this.transfer.account_to = '';
+            this.transfer.amount = 0;            
+            this.transfer.amount = '';
             this.transfer.note = '';
             this.toUserName = '';
+            
         }) 
             },
             (error) => { if(error.response.status == 401) {
@@ -685,7 +712,7 @@ grid-column-start: 2;
 
 .pending-statements {
   
- width:50%;
+ width:55%;
  height:500px;
  margin:0 auto;
  

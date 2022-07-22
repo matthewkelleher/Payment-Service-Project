@@ -1,9 +1,10 @@
 <template>
 <div id="blah">
-    <span id="image-here" :style="{'background-image':'url(' + image + ')'}">
+    <!-- <span id="image-here" :style="{'background-image':'url(' + image + ')'}"> -->
+    <span id="image-here"> <b-avatar variant="primary" size="6em" :src="imageFinder(this.userId)"></b-avatar></span>
      
        
-  </span>
+  
   <p id="welcome">Hi, {{this.firstname}}</p>
   
   <p id="display-username">{{username}}</p>
@@ -21,10 +22,16 @@ image: '',
 
 created() {
     this.firstname = this.$store.state.activeUser.firstname + "";
+    this.lastname = this.$store.state.activeUser.lastname + "";
     this.userId = this.$store.state.activeUser.accountId;
     this.image = this.userId + '.jpg';
     this.username = this.$store.state.activeUser.userName + "";
    
+},
+methods: {
+imageFinder(id) {
+    return id + ".jpg";
+  },
 }
 }
 </script>
@@ -36,18 +43,7 @@ created() {
     font-family: "Athletics",Helvetica,Arial,sans-serif;
     grid-area: b;
 }
-#image-here {
-    height: 100px;
-    width: 100px;
-    background-color: white;
-    border-radius: 50%;
-  
-    background: padding-box;
-    border: 1px solid lightslategrey;
-    text-align: center;
-    grid-area: a;
-    background-size: 100%;
-}
+
 
 #blah {
     display: grid;
